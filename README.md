@@ -1,2 +1,1 @@
-# causalinference
-Presentation on causal inference
+# Causal Inference Presentation
