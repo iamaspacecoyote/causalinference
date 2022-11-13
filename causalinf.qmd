@@ -1,0 +1,233 @@
+---
+title: "From Association to Causation"
+author: "Lindsey Dietz, PhD"
+date: "`r Sys.Date()`"
+format: revealjs
+editor: visual
+params:
+  test_variable: 'Heating'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Coffee
+
+How many of you drink coffee? How many of you think coffee is good for you? How many of you think it is bad for you?
+
+## Background
+
+Suppose we want to understand the causal impact of a treatment on a group. For example,
+
+-   Will a new feature lead to increased revenue in my app?
+
+-   Does a vaccine prevent the flu?
+
+-   Will a regulatory policy change effect bank capital?
+
+Causal inference is a missing data problem =\> we typically make assumptions about the assignment mechanism to go from descriptive inference to causal inference.
+
+## From questions to testable hypotheses
+
+-   Will a new feature lead to increased revenue in my app?
+
+    -- Treatment: new feature
+
+    -- Control: current feature
+
+    -- Experimental Unit: App user
+
+    -- Measurement: percent change in revenue per user
+
+-   Does a vaccine prevent the flu?
+
+    -- Treatment: vaccine
+
+    -- Control: placebo
+
+    -- Experimental Unit: person
+
+    -- Measurement: did a person get the flu?
+
+-   Will a regulatory policy change effect bank capital?
+
+    -- Treatment: policy change
+
+    -- Control: new policy
+
+    -- Experimental Unit: bank
+
+    -- Measurement: percent change in bank tier 1 capital from time 0
+
+## Potential Outcomes
+
+Hypothetical: $Y_a$ outcome that would be observed if treatment was set to $T = t$; each person has potential outcomes $Y_0, Y_1$; before a treatment decisions is made
+
+Observed outcome: $Y= Y_t$ and counterfactual outcome $Y = Y_{1-T}$ Counterfactual: outcome that would have been observed if treatment had been different If treatment was $T = 1$, then counterfactual outcome is $Y_0$
+
+Counterfactual are assumed to be same as potential outcomes
+
+Fundamental problem of causal inference: we cannot observe both potential outcomes.
+
+![](images/paste-B2603074.png)
+
+**Average Treatment Effect (ATE)**
+
+Average of all treatment potential outcomes − Average of all control potential outcomes
+
+${ATE} = E[Y_{1} − Y_{0}]$
+
+In general, $E[Y_{1} − Y_{0}] \ne E[Y|T=1] − E[Y|T=0]$. This is a difference between setting and conditioning (though the notation appears to be identical!)
+
+$E[Y|T=1]$: mean of Y among people with T = 1
+
+$E[Y_1]$: mean of Y if the whole population was treated with T = 1
+
+![](images/paste-4AF0395B.png)
+
+## Identifiability Assumptions
+
+We need to make some untestable assumptions to do causal inference.
+
+1.  Positivity: there is no selection bias. That is, every unit is equally likely to be assigned a treatment. In probabilistic terms, $P(T = t | X = x) > 0$
+
+2.  Ignorability: there are no unmeasured confounders (X), i.e. $Y_0, Y_1 \perp T | X$; among those with the same confounders, we can think of treatment T as being randomly assigned
+
+3.  Consistency: outcome Y is observable, i.e. $Y = Y_t$ if $T = t$ for all $t$
+
+4.  Stable Unit Treatment Value Assumption (SUTVA):
+
+    -- No interference: potential outcomes for unit i are unaffected by the treatment assignment for unit j -- One version of treatment
+
+$E[Y|T=t, X=x]$ involves only observed data. To link this to potential outcomes and our interest in a causal effect, we use the assumptions.
+
+```{=tex}
+\begin{align}
+E[Y|T=t, X=x] =& E[Y_t|T=t, X=x] \text{ by Consistency assumption}\\
+=& E[Y_t|X=x] \text{ by Ignorability assumption}\\
+\end{align}
+```
+$E[Y_t] = E[E[Y_t|X=x]]$ by the Law of Total Expectation, i.e. average over X
+
+Then, \begin{align}
+E[Y_1 - Y_0] =& E[Y_1] - E[Y_0] \\
+=& E[E[Y_1|X=x]] - E[E[Y_0|X=x]]
+\end{align}
+
+Outcome for treated − Outcome for untreated = \[Outcome for treated − Outcome for treated if not treated\] + \[Outcome for treated if not treated − Outcome for untreated\] = Impact of treatment on treated + selection bias.
+
+Key idea: estimating the counterfactual --- a prediction of what would have happened in the absence of the treatment. Neyman-Rubin's Framework for Causal Inference 1. Gold standard: randomized experimentation If you can run an experiment, you should do so.
+
+Useful Reference for Causal Inference: <https://www.pnas.org/doi/epdf/10.1073/pnas.1510479113>
+
+## Matching
+
+Suppose we are not in control of the treatment mechanism so there are differences in the assignment, i.e. we are in violation of the Ignorability and possibly the Positivity assumption.
+
+We want to match on the full set of covariates, X. Propensity scoring: For unit i, $\pi_i = P(T=t|X=x_i)$ If a unit has a propensity score of 0.3, they would have a 30% chance of receiving treatment.
+
+If we match on propensity score, we can meet our assumption of ignorability (treatment is randomized given X).
+
+In a randomized experiment, P(T=1\|X) = P(T=1) = 0.5. In an observational setting, we don't know the score, but we can estimate it.
+
+P(T=1\|X) - we have a binary outcome so we can use methods that are suitable for this such as logistic regression (or machine learning alternatives).
+
+1.  Fit a propensity score model with outcome T and covariates X.
+2.  Get the predicted propensity score for each unit.
+3.  Perform matching based on an algorithm
+
+Overlap between propensity scores in control and treated: Positivity assumption checking
+
+Match on distance- caliper to prevent bad matches
+
+```{r dataclean, message=FALSE}
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(MatchIt)
+library(tableone)
+library(data.table)
+library(ggplot2)
+
+source('support_functions.R')
+# http://insideairbnb.com/get-the-data
+
+msp <- reading_data(url = "http://data.insideairbnb.com/united-states/mn/twin-cities-msa/2022-09-16/data/listings.csv.gz")
+
+top40msp <- top_amenities(data = msp, number = 40) 
+
+```
+
+```{r dataclean2, message=FALSE}
+
+analysis_set_msp <- create_analysis_set(data = msp, 
+                    amenities_vector = top40msp, 
+                    test_var = params$test_variable,
+                    inactive_date = Sys.Date() - 365,
+                    room_types = c('Entire home/apt', 'Private room'),
+                    standard_baths = 1:3,
+                    standard_beds = 0:5,
+                    review_lower_bound = 0,
+                    min_nights_upper_bound = 7)
+
+tableone::CreateTableOne(data = analysis_set_msp, strata = params$test_variable, smd = TRUE, test = FALSE)
+
+```
+
+```{r propscore, message=FALSE}
+
+model_formula <- as.formula(paste(params$test_variable, "~ beds + bathroom + room_type"))
+
+# propensity score model
+# 1. Fit a propensity score model with outcome T and covariates X.
+# 2. Get the predicted propensity score for each unit.
+# 3. Perform matching based on an algorithm
+
+matched_out <- MatchIt::matchit(model_formula, 
+                                data = analysis_set_msp, 
+                                method = 'optimal',
+                                caliper = NULL)
+summary(matched_out)
+
+analysis_set_msp <- analysis_set_msp %>%
+  dplyr::mutate(prop_score = matched_out$model$fitted.values,
+         weights = matched_out$weights)
+
+# Positivity assumption checking: Is there overlap between propensity scores in control and treated
+ggplot2::ggplot(analysis_set_msp, aes(x = prop_score)) +
+  geom_density(data = analysis_set_msp %>% 
+                 filter(get(params$test_variable) == TRUE), 
+               aes(x = prop_score, y = ..density..), fill= "#69b3a2") +
+  geom_density(data = analysis_set_msp %>% 
+                 filter(get(params$test_variable) == FALSE), 
+               aes(x = prop_score, y = -..density..), fill= "#404080") +
+  theme_minimal() +
+  xlab('Propensity Score') +
+  ylab('Density')
+  
+
+matched_set_msp <- analysis_set_msp %>%
+  dplyr::filter(weights == 1) %>%
+  dplyr::select(-weights, -prop_score)
+
+match_tbl <- tableone::CreateTableOne(vars = c('beds', 'bathroom', 'room_type'), 
+                                      data = matched_set_msp, 
+                                      strata = params$test_variable, 
+                                      smd = TRUE, test = FALSE)
+print(match_tbl, smd = TRUE)
+
+# outcome analysis
+y_trt <- matched_set_msp %>%
+  dplyr::filter(get(params$test_variable) == TRUE) %>%
+  dplyr::pull(price)
+
+y_con <- matched_set_msp %>%
+  dplyr::filter(get(params$test_variable) == FALSE) %>%
+  dplyr::pull(price)
+
+# Paired t-test can be computed in either of the following ways
+t.test(y_trt, y_con, paired = TRUE)
+t.test(y_trt - y_con) # Treated paired sample like one-sample
+
+```
