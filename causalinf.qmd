@@ -2,7 +2,9 @@
 title: "From Association to Causation"
 author: "Lindsey Dietz, PhD"
 date: "`r Sys.Date()`"
-format: revealjs
+format: 
+  revealjs:
+    incremental: true  
 editor: visual
 params:
   test_variable: 'Heating'
@@ -12,55 +14,74 @@ params:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Coffee
+## Coffee 
 
-How many of you drink coffee? How many of you think coffee is good for you? How many of you think it is bad for you?
+How many of you drink coffee? 
 
-## Background
+. . .
 
-Suppose we want to understand the causal impact of a treatment on a group. For example,
+How many of you think it is bad for you?
 
--   Will a new feature lead to increased revenue in my app?
+. . .
 
--   Does a vaccine prevent the flu?
+*"The **risk** of hypertension associated with coffee intake varies according to CYP1A2 genotype. Carriers of slow 1F allele are at **increased risk** and should thus abstain from coffee, whereas individuals with 1A/1A genotype can safely drink coffee."* 
 
--   Will a regulatory policy change effect bank capital?
+-- Journal of Hypertension, August 2009
 
-Causal inference is a missing data problem =\> we typically make assumptions about the assignment mechanism to go from descriptive inference to causal inference.
+## Coffee 
 
-## From questions to testable hypotheses
+How many of you drink coffee? 
 
--   Will a new feature lead to increased revenue in my app?
+How many of you think it is good for you? 
 
-    -- Treatment: new feature
+. . .
 
-    -- Control: current feature
+*"Drinking two to three cups of coffee a day is **linked with a longer lifespan and lower risk** of cardiovascular disease compared with avoiding coffee."* 
 
-    -- Experimental Unit: App user
+-- European Journal of Preventive Cardiology, September 2022
 
-    -- Measurement: percent change in revenue per user
+## {background-iframe="https://giphy.com/embed/UnTC9o2HMyUta" background-repeat="repeat"}
 
--   Does a vaccine prevent the flu?
+## Agenda 
 
-    -- Treatment: vaccine
+ - Causal Inference Preliminaries
+ - Matching
+ - Example using R and Airbnb Data
 
-    -- Control: placebo
+## Association To Causation
 
-    -- Experimental Unit: person
+ - Most of us want to understand more than just association (links, risks, etc.)
+ - For example,
+    -   Will a new feature lead to increased revenue in my app?
+    -   Does a vaccine prevent the flu?
+    -   Will a regulatory policy change affect bank capital?
 
-    -- Measurement: did a person get the flu?
+## Causal Inference 
 
--   Will a regulatory policy change effect bank capital?
+Causal inference is a general set of principles and methods that allow us to make statistical inferences about the causal effects of treatments from randomized and observational data.
+ 
+## Those who can, design experiments!
 
-    -- Treatment: policy change
+:::: {.columns}
 
-    -- Control: new policy
+::: {.column width="30%"}
+<iframe height="500" data-src="https://giphy.com/embed/vnELlPo3FyzfO"></iframe>
+:::
 
-    -- Experimental Unit: bank
+::: {.column width="70%"}
+ - Randomized Experiments a.k.a *Randomized Controlled Trials (RCTs)* or *A/B testing* are the gold standard for causation. 
+ - However, ethical or logistical reasons may prevent us from using experimentation.
+    - We cannot force people to do dangerous things.
+    - If one unit is influenced by another, we cannot parse treatment impacts.
+:::
 
-    -- Measurement: percent change in bank tier 1 capital from time 0
+::::
 
-## Potential Outcomes
+## Neyman–Rubin Causal Model
+
+Outside of a randomized experiment, causal inference is a missing data problem. We don't know the real-world probability of a unit being assigned into a treatment (T) given a set of confounders (X).
+
+## Potential Outcomes Framework
 
 Hypothetical: $Y_a$ outcome that would be observed if treatment was set to $T = t$; each person has potential outcomes $Y_0, Y_1$; before a treatment decisions is made
 
@@ -72,7 +93,7 @@ Fundamental problem of causal inference: we cannot observe both potential outcom
 
 ![](images/paste-B2603074.png)
 
-**Average Treatment Effect (ATE)**
+## Average Treatment Effect (ATE)
 
 Average of all treatment potential outcomes − Average of all control potential outcomes
 
@@ -86,29 +107,29 @@ $E[Y_1]$: mean of Y if the whole population was treated with T = 1
 
 ![](images/paste-4AF0395B.png)
 
-## Identifiability Assumptions
+## Nothing is free
 
-We need to make some untestable assumptions to do causal inference.
+Outside of a pre-designed randomized experiment, we must make **strong and mostly untestable** assumptions about the treatment assignment mechanism to go from descriptive inference to causal inference.
 
-1.  Positivity: there is no selection bias. That is, every unit is equally likely to be assigned a treatment. In probabilistic terms, $P(T = t | X = x) > 0$
+1.  (Positivity) Every unit is equally likely to be assigned a treatment: $P(T = t | X = x) > 0$
 
-2.  Ignorability: there are no unmeasured confounders (X), i.e. $Y_0, Y_1 \perp T | X$; among those with the same confounders, we can think of treatment T as being randomly assigned
+2.  (Ignorability) no unmeasured confounders, i.e. $Y_0, Y_1 \perp T | X$. Among those with the same confounders, we can think of treatment as being randomly assigned.
 
-3.  Consistency: outcome Y is observable, i.e. $Y = Y_t$ if $T = t$ for all $t$
+3.  (Consistency) Y is observable, i.e. $Y = Y_t$ if $T = t$ for all $t$
 
-4.  Stable Unit Treatment Value Assumption (SUTVA):
+4.  Stable Unit Treatment Value Assumption (SUTVA): potential outcomes for unit i are unaffected by the treatment assignment for unit j 
 
-    -- No interference: potential outcomes for unit i are unaffected by the treatment assignment for unit j -- One version of treatment
+## How the assumptions get us to a treatment effect
 
-$E[Y|T=t, X=x]$ involves only observed data. To link this to potential outcomes and our interest in a causal effect, we use the assumptions.
+$E[Y|T=t, X=x]$ involves only observed data. 
 
 ```{=tex}
 \begin{align}
-E[Y|T=t, X=x] =& E[Y_t|T=t, X=x] \text{ by Consistency assumption}\\
-=& E[Y_t|X=x] \text{ by Ignorability assumption}\\
+E[Y|T=t, X=x] =& E[Y_t|T=t, X=x] \text{ by Consistency}\\
+=& E[Y_t|X=x] \text{ by Ignorability}\\
 \end{align}
 ```
-$E[Y_t] = E[E[Y_t|X=x]]$ by the Law of Total Expectation, i.e. average over X
+$E[Y_t] = E[E[Y_t|X=x]]$ by the Law of Total Expectation
 
 Then, \begin{align}
 E[Y_1 - Y_0] =& E[Y_1] - E[Y_0] \\
@@ -117,9 +138,28 @@ E[Y_1 - Y_0] =& E[Y_1] - E[Y_0] \\
 
 Outcome for treated − Outcome for untreated = \[Outcome for treated − Outcome for treated if not treated\] + \[Outcome for treated if not treated − Outcome for untreated\] = Impact of treatment on treated + selection bias.
 
-Key idea: estimating the counterfactual --- a prediction of what would have happened in the absence of the treatment. Neyman-Rubin's Framework for Causal Inference 1. Gold standard: randomized experimentation If you can run an experiment, you should do so.
+Key idea: estimating the counterfactual --- a prediction of what would have happened in the absence of the treatment. Neyman-Rubin's Framework for Causal Inference 
 
 Useful Reference for Causal Inference: <https://www.pnas.org/doi/epdf/10.1073/pnas.1510479113>
+
+## Will a new feature lead to increased revenue in my app?
+
+- Treatment: new feature
+- Control: current feature
+- Experimental Unit: App user
+- Measurement/Metric: percent change in revenue per user
+- Plausible Confounders: age, gender, time of the year
+
+## Will a regulatory policy change affect bank capital?
+
+- Treatment: new policy
+- Control: former policy
+- Experimental Unit: bank
+- Measurement/Metric: percent change in bank capital from policy enactment to set final time 
+- Plausible Confounders: mix of business, mergers/acquisitions/divestitures, economic environment
+
+
+
 
 ## Matching
 
@@ -141,7 +181,11 @@ Overlap between propensity scores in control and treated: Positivity assumption 
 
 Match on distance- caliper to prevent bad matches
 
-```{r dataclean, message=FALSE}
+
+```{r dataclean}
+#| message: false
+#| cache: true
+
 library(dplyr)
 library(tidyr)
 library(stringr)
@@ -159,7 +203,9 @@ top40msp <- top_amenities(data = msp, number = 40)
 
 ```
 
-```{r dataclean2, message=FALSE}
+```{r dataclean2}
+#| message: false
+#| cache: true
 
 analysis_set_msp <- create_analysis_set(data = msp, 
                     amenities_vector = top40msp, 
@@ -175,7 +221,9 @@ tableone::CreateTableOne(data = analysis_set_msp, strata = params$test_variable,
 
 ```
 
-```{r propscore, message=FALSE}
+```{r propscore}
+#| message: false
+#| cache: true
 
 model_formula <- as.formula(paste(params$test_variable, "~ beds + bathroom + room_type"))
 

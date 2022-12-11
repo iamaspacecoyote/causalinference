@@ -7,10 +7,10 @@
 <link href="causalinf_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="causalinf_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="causalinf_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.0.36">
+  <meta name="generator" content="quarto-1.1.189">
 
   <meta name="author" content="Lindsey Dietz, PhD">
-  <meta name="dcterms.date" content="2022-11-13">
+  <meta name="dcterms.date" content="2022-12-11">
   <title>From Association to Causation</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -20,10 +20,15 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -386,77 +391,140 @@
 <section id="title-slide" class="center">
   <h1 class="title">From Association to Causation</h1>
   <p class="author">Lindsey Dietz, PhD</p>
-  <p class="date">2022-11-13</p>
+  <p class="date">2022-12-11</p>
 </section>
 
-<section id="background" class="slide level2">
-<h2>Background</h2>
-<p>Suppose we want to understand the causal impact of a treatment on a group. For example,</p>
-<ul>
-<li><p>Will a new feature lead to increased revenue in my app?</p></li>
-<li><p>Does a vaccine prevent the flu?</p></li>
-<li><p>Will a regulatory policy change effect bank capital?</p></li>
-</ul>
-<p>Causal inference is a missing data problem =&gt; we typically make assumptions about the assignment mechanism to go from descriptive inference to causal inference.</p>
+<section id="coffee" class="slide level2">
+<h2>Coffee</h2>
+<p>How many of you drink coffee?</p>
+<div class="fragment">
+<p>How many of you think it is bad for you?</p>
+</div>
+<div class="fragment">
+<p><em>“The <strong>risk</strong> of hypertension associated with coffee intake varies according to CYP1A2 genotype. Carriers of slow 1F allele are at <strong>increased risk</strong> and should thus abstain from coffee, whereas individuals with 1A/1A genotype can safely drink coffee.”</em></p>
+<p>– Journal of Hypertension, August 2009</p>
+</div>
 </section>
-<section id="from-questions-to-testable-hypotheses" class="slide level2">
-<h2>From questions to testable hypotheses</h2>
+<section id="coffee-1" class="slide level2">
+<h2>Coffee</h2>
+<p>How many of you drink coffee?</p>
+<p>How many of you think it is good for you?</p>
+<div class="fragment">
+<p><em>“Drinking two to three cups of coffee a day is <strong>linked with a longer lifespan and lower risk</strong> of cardiovascular disease compared with avoiding coffee.”</em></p>
+<p>– European Journal of Preventive Cardiology, September 2022</p>
+</div>
+</section>
+<section id="section" class="slide level2" data-background-iframe="https://giphy.com/embed/UnTC9o2HMyUta" data-background-repeat="repeat">
+<h2></h2>
+</section>
+<section id="agenda" class="slide level2">
+<h2>Agenda</h2>
 <ul>
-<li><p>Will a new feature lead to increased revenue in my app?</p>
-<p>– Treatment: new feature</p>
-<p>– Control: current feature</p>
-<p>– Experimental Unit: App user</p>
-<p>– Measurement: percent change in revenue per user</p></li>
-<li><p>Does a vaccine prevent the flu?</p>
-<p>– Treatment: vaccine</p>
-<p>– Control: placebo</p>
-<p>– Experimental Unit: person</p>
-<p>– Measurement: did a person get the flu?</p></li>
-<li><p>Will a regulatory policy change effect bank capital?</p>
-<p>– Treatment: policy change</p>
-<p>– Control: new policy</p>
-<p>– Experimental Unit: bank</p>
-<p>– Measurement: percent change in bank tier 1 capital from time 0</p></li>
+<li class="fragment">Causal Inference Preliminaries</li>
+<li class="fragment">Matching</li>
+<li class="fragment">Example using R and Airbnb Data</li>
 </ul>
 </section>
-<section id="potential-outcomes" class="slide level2">
-<h2>Potential Outcomes</h2>
+<section id="association-to-causation" class="slide level2">
+<h2>Association To Causation</h2>
+<ul>
+<li class="fragment">Most of us want to understand more than just association (links, risks, etc.)</li>
+<li class="fragment">For example,
+<ul>
+<li class="fragment">Will a new feature lead to increased revenue in my app?</li>
+<li class="fragment">Does a vaccine prevent the flu?</li>
+<li class="fragment">Will a regulatory policy change affect bank capital?</li>
+</ul></li>
+</ul>
+</section>
+<section id="causal-inference" class="slide level2">
+<h2>Causal Inference</h2>
+<p>Causal inference is a general set of principles and methods that allow us to make statistical inferences about the causal effects of treatments from randomized and observational data.</p>
+</section>
+<section id="those-who-can-design-experiments" class="slide level2">
+<h2>Those who can, design experiments!</h2>
+<div class="columns">
+<div class="column" style="width:30%;">
+<iframe height="500" data-src="https://giphy.com/embed/vnELlPo3FyzfO">
+</iframe>
+</div><div class="column" style="width:70%;">
+<ul>
+<li class="fragment">Randomized Experiments a.k.a <em>Randomized Controlled Trials (RCTs)</em> or <em>A/B testing</em> are the gold standard for causation.</li>
+<li class="fragment">However, ethical or logistical reasons may prevent us from using experimentation.
+<ul>
+<li class="fragment">We cannot force people to do dangerous things.</li>
+<li class="fragment">If one unit is influenced by another, we cannot parse treatment impacts.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="neymanrubin-causal-model" class="slide level2">
+<h2>Neyman–Rubin Causal Model</h2>
+<p>Outside of a randomized experiment, causal inference is a missing data problem. We don’t know the real-world probability of a unit being assigned into a treatment (T) given a set of confounders (X).</p>
+</section>
+<section id="potential-outcomes-framework" class="slide level2">
+<h2>Potential Outcomes Framework</h2>
 <p>Hypothetical: <span class="math inline">\(Y_a\)</span> outcome that would be observed if treatment was set to <span class="math inline">\(T = t\)</span>; each person has potential outcomes <span class="math inline">\(Y_0, Y_1\)</span>; before a treatment decisions is made</p>
 <p>Observed outcome: <span class="math inline">\(Y= Y_t\)</span> and counterfactual outcome <span class="math inline">\(Y = Y_{1-T}\)</span> Counterfactual: outcome that would have been observed if treatment had been different If treatment was <span class="math inline">\(T = 1\)</span>, then counterfactual outcome is <span class="math inline">\(Y_0\)</span></p>
 <p>Counterfactual are assumed to be same as potential outcomes</p>
 <p>Fundamental problem of causal inference: we cannot observe both potential outcomes.</p>
-<p><img data-src="images/paste-B2603074.png"></p>
-<p><strong>Average Treatment Effect (ATE)</strong></p>
+
+<img data-src="images/paste-B2603074.png" class="r-stretch"></section>
+<section id="average-treatment-effect-ate" class="slide level2">
+<h2>Average Treatment Effect (ATE)</h2>
 <p>Average of all treatment potential outcomes − Average of all control potential outcomes</p>
 <p><span class="math inline">\({ATE} = E[Y_{1} − Y_{0}]\)</span></p>
 <p>In general, <span class="math inline">\(E[Y_{1} − Y_{0}] \ne E[Y|T=1] − E[Y|T=0]\)</span>. This is a difference between setting and conditioning (though the notation appears to be identical!)</p>
 <p><span class="math inline">\(E[Y|T=1]\)</span>: mean of Y among people with T = 1</p>
 <p><span class="math inline">\(E[Y_1]\)</span>: mean of Y if the whole population was treated with T = 1</p>
-<p><img data-src="images/paste-4AF0395B.png"></p>
-</section>
-<section id="identifiability-assumptions" class="slide level2">
-<h2>Identifiability Assumptions</h2>
-<p>We need to make some untestable assumptions to do causal inference.</p>
+
+<img data-src="images/paste-4AF0395B.png" class="r-stretch"></section>
+<section id="nothing-is-free" class="slide level2">
+<h2>Nothing is free</h2>
+<p>Outside of a pre-designed randomized experiment, we must make <strong>strong and mostly untestable</strong> assumptions about the treatment assignment mechanism to go from descriptive inference to causal inference.</p>
 <ol type="1">
-<li><p>Positivity: there is no selection bias. That is, every unit is equally likely to be assigned a treatment. In probabilistic terms, <span class="math inline">\(P(T = t | X = x) &gt; 0\)</span></p></li>
-<li><p>Ignorability: there are no unmeasured confounders (X), i.e.&nbsp;<span class="math inline">\(Y_0, Y_1 \perp T | X\)</span>; among those with the same confounders, we can think of treatment T as being randomly assigned</p></li>
-<li><p>Consistency: outcome Y is observable, i.e.&nbsp;<span class="math inline">\(Y = Y_t\)</span> if <span class="math inline">\(T = t\)</span> for all <span class="math inline">\(t\)</span></p></li>
-<li><p>Stable Unit Treatment Value Assumption (SUTVA):</p>
-<p>– No interference: potential outcomes for unit i are unaffected by the treatment assignment for unit j – One version of treatment</p></li>
+<li class="fragment"><p>(Positivity) Every unit is equally likely to be assigned a treatment: <span class="math inline">\(P(T = t | X = x) &gt; 0\)</span></p></li>
+<li class="fragment"><p>(Ignorability) no unmeasured confounders, i.e.&nbsp;<span class="math inline">\(Y_0, Y_1 \perp T | X\)</span>. Among those with the same confounders, we can think of treatment as being randomly assigned.</p></li>
+<li class="fragment"><p>(Consistency) Y is observable, i.e.&nbsp;<span class="math inline">\(Y = Y_t\)</span> if <span class="math inline">\(T = t\)</span> for all <span class="math inline">\(t\)</span></p></li>
+<li class="fragment"><p>Stable Unit Treatment Value Assumption (SUTVA): potential outcomes for unit i are unaffected by the treatment assignment for unit j</p></li>
 </ol>
-<p><span class="math inline">\(E[Y|T=t, X=x]\)</span> involves only observed data. To link this to potential outcomes and our interest in a causal effect, we use the assumptions.</p>
+</section>
+<section id="how-the-assumptions-get-us-to-a-treatment-effect" class="slide level2">
+<h2>How the assumptions get us to a treatment effect</h2>
+<p><span class="math inline">\(E[Y|T=t, X=x]\)</span> involves only observed data.</p>
 <span class="math display">\[\begin{align}
-E[Y|T=t, X=x] =&amp; E[Y_t|T=t, X=x] \text{ by Consistency assumption}\\
-=&amp; E[Y_t|X=x] \text{ by Ignorability assumption}\\
+E[Y|T=t, X=x] =&amp; E[Y_t|T=t, X=x] \text{ by Consistency}\\
+=&amp; E[Y_t|X=x] \text{ by Ignorability}\\
 \end{align}\]</span>
-<p><span class="math inline">\(E[Y_t] = E[E[Y_t|X=x]]\)</span> by the Law of Total Expectation, i.e.&nbsp;average over X</p>
+<p><span class="math inline">\(E[Y_t] = E[E[Y_t|X=x]]\)</span> by the Law of Total Expectation</p>
 <p>Then, <span class="math display">\[\begin{align}
 E[Y_1 - Y_0] =&amp; E[Y_1] - E[Y_0] \\
 =&amp; E[E[Y_1|X=x]] - E[E[Y_0|X=x]]
 \end{align}\]</span></p>
 <p>Outcome for treated − Outcome for untreated = [Outcome for treated − Outcome for treated if not treated] + [Outcome for treated if not treated − Outcome for untreated] = Impact of treatment on treated + selection bias.</p>
-<p>Key idea: estimating the counterfactual — a prediction of what would have happened in the absence of the treatment. Neyman-Rubin’s Framework for Causal Inference 1. Gold standard: randomized experimentation If you can run an experiment, you should do so.</p>
+<p>Key idea: estimating the counterfactual — a prediction of what would have happened in the absence of the treatment. Neyman-Rubin’s Framework for Causal Inference</p>
 <p>Useful Reference for Causal Inference: <a href="https://www.pnas.org/doi/epdf/10.1073/pnas.1510479113" class="uri">https://www.pnas.org/doi/epdf/10.1073/pnas.1510479113</a></p>
+</section>
+<section id="will-a-new-feature-lead-to-increased-revenue-in-my-app" class="slide level2">
+<h2>Will a new feature lead to increased revenue in my app?</h2>
+<ul>
+<li class="fragment">Treatment: new feature</li>
+<li class="fragment">Control: current feature</li>
+<li class="fragment">Experimental Unit: App user</li>
+<li class="fragment">Measurement/Metric: percent change in revenue per user</li>
+<li class="fragment">Plausible Confounders: age, gender, time of the year</li>
+</ul>
+</section>
+<section id="will-a-regulatory-policy-change-affect-bank-capital" class="slide level2">
+<h2>Will a regulatory policy change affect bank capital?</h2>
+<ul>
+<li class="fragment">Treatment: new policy</li>
+<li class="fragment">Control: former policy</li>
+<li class="fragment">Experimental Unit: bank</li>
+<li class="fragment">Measurement/Metric: percent change in bank capital from policy enactment to set final time</li>
+<li class="fragment">Plausible Confounders: mix of business, mergers/acquisitions/divestitures, economic environment</li>
+</ul>
 </section>
 <section id="matching" class="slide level2">
 <h2>Matching</h2>
@@ -466,13 +534,13 @@ E[Y_1 - Y_0] =&amp; E[Y_1] - E[Y_0] \\
 <p>In a randomized experiment, P(T=1|X) = P(T=1) = 0.5. In an observational setting, we don’t know the score, but we can estimate it.</p>
 <p>P(T=1|X) - we have a binary outcome so we can use methods that are suitable for this such as logistic regression (or machine learning alternatives).</p>
 <ol type="1">
-<li>Fit a propensity score model with outcome T and covariates X.</li>
-<li>Get the predicted propensity score for each unit.</li>
-<li>Perform matching based on an algorithm</li>
+<li class="fragment">Fit a propensity score model with outcome T and covariates X.</li>
+<li class="fragment">Get the predicted propensity score for each unit.</li>
+<li class="fragment">Perform matching based on an algorithm</li>
 </ol>
 <p>Overlap between propensity scores in control and treated: Positivity assumption checking</p>
 <p>Match on distance- caliper to prevent bad matches</p>
-<div class="cell">
+<div class="cell" data-hash="causalinf_cache/revealjs/dataclean_349546a97ebe452f171c6643bbd6baf5">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(tidyr)</span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(stringr)</span>
@@ -488,7 +556,7 @@ E[Y_1 - Y_0] =&amp; E[Y_1] - E[Y_0] \\
 <span id="cb1-13"><a href="#cb1-13"></a></span>
 <span id="cb1-14"><a href="#cb1-14"></a>top40msp <span class="ot">&lt;-</span> <span class="fu">top_amenities</span>(<span class="at">data =</span> msp, <span class="at">number =</span> <span class="dv">40</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell">
+<div class="cell" data-hash="causalinf_cache/revealjs/dataclean2_d0b2e424496ddbf07bf82986a90a8be2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>analysis_set_msp <span class="ot">&lt;-</span> <span class="fu">create_analysis_set</span>(<span class="at">data =</span> msp, </span>
 <span id="cb2-2"><a href="#cb2-2"></a>                    <span class="at">amenities_vector =</span> top40msp, </span>
 <span id="cb2-3"><a href="#cb2-3"></a>                    <span class="at">test_var =</span> params<span class="sc">$</span>test_variable,</span>
@@ -503,15 +571,15 @@ E[Y_1 - Y_0] =&amp; E[Y_1] - E[Y_0] \\
 <div class="cell-output cell-output-stdout">
 <pre><code>                              Stratified by Heating
                                FALSE           TRUE           
-  n                               764            1511         
-  price (mean (SD))            159.68 (127.56) 157.33 (139.63)
-  beds (mean (SD))               2.44 (1.30)     2.22 (1.28)  
+  n                               761            1496         
+  price (mean (SD))            159.74 (127.79) 157.07 (139.58)
+  beds (mean (SD))               2.45 (1.30)     2.21 (1.28)  
   bathroom (mean (SD))           1.31 (0.54)     1.24 (0.50)  
-  Heating = TRUE (%)                0 ( 0.0)     1511 (100.0) 
-  room_type = Private room (%)    177 (23.2)      432 ( 28.6) </code></pre>
+  Heating = TRUE (%)                0 ( 0.0)     1496 (100.0) 
+  room_type = Private room (%)    176 (23.1)      426 ( 28.5) </code></pre>
 </div>
 </div>
-<div class="cell">
+<div class="cell" data-hash="causalinf_cache/revealjs/propscore_b8489173d4201eedc57b959c143e74de">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>model_formula <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="fu">paste</span>(params<span class="sc">$</span>test_variable, <span class="st">"~ beds + bathroom + room_type"</span>))</span>
 <span id="cb4-2"><a href="#cb4-2"></a></span>
 <span id="cb4-3"><a href="#cb4-3"></a><span class="co"># propensity score model</span></span>
@@ -532,38 +600,38 @@ MatchIt::matchit(formula = model_formula, data = analysis_set_msp,
 
 Summary of Balance for All Data:
                          Means Treated Means Control Std. Mean Diff. Var. Ratio
-distance                        0.6670        0.6586          0.1964     0.9273
-beds                            2.2158        2.4437         -0.1783     0.9745
-bathroom                        1.2389        1.3102         -0.1420     0.8687
-room_typeEntire home/apt        0.7141        0.7683         -0.1200          .
-room_typePrivate room           0.2859        0.2317          0.1200          .
+distance                        0.6658        0.6570          0.2019     0.9142
+beds                            2.2139        2.4481         -0.1833     0.9718
+bathroom                        1.2373        1.3114         -0.1485     0.8567
+room_typeEntire home/apt        0.7152        0.7687         -0.1185          .
+room_typePrivate room           0.2848        0.2313          0.1185          .
                          eCDF Mean eCDF Max
-distance                    0.0570   0.1084
-beds                        0.0456   0.0902
-bathroom                    0.0238   0.0684
-room_typeEntire home/apt    0.0542   0.0542
-room_typePrivate room       0.0542   0.0542
+distance                    0.0582   0.1088
+beds                        0.0468   0.0916
+bathroom                    0.0247   0.0701
+room_typeEntire home/apt    0.0535   0.0535
+room_typePrivate room       0.0535   0.0535
 
 
 Summary of Balance for Matched Data:
                          Means Treated Means Control Std. Mean Diff. Var. Ratio
-distance                        0.6586        0.6586         -0.0008     1.0017
-beds                            2.4411        2.4437         -0.0020     1.0092
-bathroom                        1.3141        1.3102          0.0078     1.0141
-room_typeEntire home/apt        0.7670        0.7683         -0.0029          .
-room_typePrivate room           0.2330        0.2317          0.0029          .
+distance                        0.6570        0.6570         -0.0004     1.0015
+beds                            2.4455        2.4481         -0.0021     1.0092
+bathroom                        1.3101        1.3114         -0.0026     0.9892
+room_typeEntire home/apt        0.7727        0.7687          0.0087          .
+room_typePrivate room           0.2273        0.2313         -0.0087          .
                          eCDF Mean eCDF Max Std. Pair Dist.
-distance                    0.0007   0.0026          0.0013
-beds                        0.0016   0.0026          0.0102
-bathroom                    0.0013   0.0026          0.1434
-room_typeEntire home/apt    0.0013   0.0013          0.1535
-room_typePrivate room       0.0013   0.0013          0.1535
+distance                    0.0004   0.0026          0.0010
+beds                        0.0016   0.0026          0.0165
+bathroom                    0.0004   0.0013          0.0237
+room_typeEntire home/apt    0.0039   0.0039          0.0204
+room_typePrivate room       0.0039   0.0039          0.0204
 
 Sample Sizes:
           Control Treated
-All           764    1511
-Matched       764     764
-Unmatched       0     747
+All           761    1496
+Matched       761     761
+Unmatched       0     735
 Discarded       0       0</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>analysis_set_msp <span class="ot">&lt;-</span> analysis_set_msp <span class="sc">%&gt;%</span></span>
@@ -594,10 +662,10 @@ Discarded       0       0</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>                              Stratified by Heating
                                FALSE        TRUE         SMD   
-  n                             764          764               
-  beds (mean (SD))             2.44 (1.30)  2.44 (1.30)   0.002
-  bathroom (mean (SD))         1.31 (0.54)  1.31 (0.54)   0.007
-  room_type = Private room (%)  177 (23.2)   178 (23.3)   0.003</code></pre>
+  n                             761          761               
+  beds (mean (SD))             2.45 (1.30)  2.45 (1.30)   0.002
+  bathroom (mean (SD))         1.31 (0.54)  1.31 (0.54)   0.002
+  room_type = Private room (%)  176 (23.1)   173 (22.7)   0.009</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># outcome analysis</span></span>
 <span id="cb9-2"><a href="#cb9-2"></a>y_trt <span class="ot">&lt;-</span> matched_set_msp <span class="sc">%&gt;%</span></span>
@@ -615,13 +683,13 @@ Discarded       0       0</code></pre>
     Paired t-test
 
 data:  y_trt and y_con
-t = 1.8671, df = 763, p-value = 0.06227
+t = 1.8688, df = 760, p-value = 0.06203
 alternative hypothesis: true mean difference is not equal to 0
 95 percent confidence interval:
- -0.7033754 28.0803388
+ -0.6705195 27.2565905
 sample estimates:
 mean difference 
-       13.68848 </code></pre>
+       13.29304 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">t.test</span>(y_trt <span class="sc">-</span> y_con) <span class="co"># Treated paired sample like one-sample</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -629,13 +697,13 @@ mean difference
     One Sample t-test
 
 data:  y_trt - y_con
-t = 1.8671, df = 763, p-value = 0.06227
+t = 1.8688, df = 760, p-value = 0.06203
 alternative hypothesis: true mean is not equal to 0
 95 percent confidence interval:
- -0.7033754 28.0803388
+ -0.6705195 27.2565905
 sample estimates:
 mean of x 
- 13.68848 </code></pre>
+ 13.29304 </code></pre>
 </div>
 </div>
 <img data-src="causalinf_files/figure-revealjs/propscore-1.png" width="960" class="r-stretch"><div class="footer footer-default">
@@ -963,7 +1031,8 @@ mean of x
       for (var i=0; i<noterefs.length; i++) {
         const ref = noterefs[i];
         tippyHover(ref, function() {
-          let href = ref.getAttribute('href');
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
           try { href = new URL(href).hash; } catch {}
           const id = href.replace(/^#\/?/, "");
           const note = window.document.getElementById(id);
