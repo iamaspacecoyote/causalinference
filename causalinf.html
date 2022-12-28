@@ -7,10 +7,10 @@
 <link href="causalinf_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="causalinf_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="causalinf_files/libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.1.189">
+  <meta name="generator" content="quarto-1.2.269">
 
   <meta name="author" content="Lindsey Dietz, PhD">
-  <meta name="dcterms.date" content="2022-12-11">
+  <meta name="dcterms.date" content="2022-12-28">
   <title>Taking a Leap of Faith: Association to Causation</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -388,12 +388,19 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="center">
+<section id="title-slide" class="quarto-title-block center">
   <h1 class="title">Taking a Leap of Faith: Association to Causation</h1>
-  <p class="author">Lindsey Dietz, PhD</p>
-  <p class="date">2022-12-11</p>
-</section>
 
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Lindsey Dietz, PhD 
+</div>
+</div>
+</div>
+
+  <p class="date">12/28/22</p>
+</section>
 <section id="coffee" class="slide level2">
 <h2>Coffee</h2>
 <p>How many of you drink coffee?</p>
@@ -414,7 +421,7 @@
 <p>– European Journal of Preventive Cardiology, September 2022</p>
 </div>
 </section>
-<section id="section" class="slide level2" data-background-iframe="https://giphy.com/embed/UnTC9o2HMyUta" data-background-repeat="repeat">
+<section id="section" class="slide level2" data-background-iframe="https://giphy.com/embed/UnTC9o2HMyUta" data-background-repeat="a&quot;repeat&quot;">
 <h2></h2>
 </section>
 <section id="agenda" class="slide level2">
@@ -428,18 +435,25 @@
 <section id="association-to-causation" class="slide level2">
 <h2>Association To Causation</h2>
 <ul>
-<li class="fragment">Most of us want to understand more than just association (links, risks, etc.)</li>
+<li class="fragment">Most researchers want to understand more than just association (a.k.a links, risks, etc.)</li>
 <li class="fragment">For example,
 <ul>
-<li class="fragment">Will a new feature lead to increased revenue in my app?</li>
+<li class="fragment">Will a new feature increase revenue in my app?</li>
 <li class="fragment">Does a vaccine prevent the flu?</li>
-<li class="fragment">Will a regulatory policy change affect bank capital?</li>
+<li class="fragment">Will a regulatory policy change impact bank capital?</li>
 </ul></li>
 </ul>
 </section>
 <section id="causal-inference" class="slide level2">
 <h2>Causal Inference</h2>
-<p>Causal inference is a general set of principles and methods that allow us to make statistical inferences about the causal effects of treatments from randomized and observational data.</p>
+<div class="columns">
+<div class="column" style="width:70%;">
+<p>Causal inference is a general set of principles and methods that allow us to make statistical inferences about the causal effects of treatments from randomized and <strong>observational</strong> data.</p>
+</div><div class="column" style="width:30%;">
+<iframe height="600" data-src="https://giphy.com/embed/5SXsDXvfhx2eI" align="top">
+</iframe>
+</div>
+</div>
 </section>
 <section id="those-who-can-design-experiments" class="slide level2">
 <h2>Those who can, design experiments!</h2>
@@ -461,38 +475,78 @@
 </section>
 <section id="neymanrubin-causal-model" class="slide level2">
 <h2>Neyman–Rubin Causal Model</h2>
-<p>Outside of a randomized experiment, causal inference is a missing data problem. We don’t know the real-world probability of a unit being assigned into a treatment (T) given a set of confounders (X).</p>
+<ul>
+<li class="fragment"><p>Aside from a randomized experiment, causal inference is a missing data problem.</p></li>
+<li class="fragment"><p>We don’t know the real-world probability of a unit being assigned into a treatment (<span class="math inline">\(T\)</span>) given a set of confounders (<span class="math inline">\(X\)</span>).</p></li>
+</ul>
 </section>
 <section id="potential-outcomes-framework" class="slide level2">
 <h2>Potential Outcomes Framework</h2>
-<p>Hypothetical outcomes <span class="math inline">\(Y_t\)</span> are what would be observed if treatment was set to <span class="math inline">\(T = t\)</span></p>
-<p>– Each unit has potential outcomes <span class="math inline">\(Y_0, Y_1\)</span> before a treatment decisions is made.</p>
-<p>Observed outcome <span class="math inline">\(Y = Y_t\)</span>; counterfactual outcome <span class="math inline">\(Y = Y_{1-t}\)</span></p>
-<p>– Counterfactual outcome is what would have been observed if the treatment had been different.</p>
-<p><em>Fundamental problem of causal inference</em>: we cannot observe both potential outcomes.</p>
+<p>Each unit has <em>potential</em> outcomes <span class="math inline">\(\{Y_0, Y_1\}\)</span> before a treatment decisions is made. A <em>counterfactual</em> outcome is what would have been observed if the treatment had been different.</p>
 
-<img data-src="images/paste-B2603074.png" class="r-stretch"></section>
+<img data-src="images/outcomes.png" class="r-stretch quarto-figure-center"></section>
+<section id="fundamental-problem-of-causal-inference" class="slide level2">
+<h2>Fundamental problem of causal inference</h2>
+<p>We cannot observe both potential outcomes for a unit.</p>
+
+<img data-src="images/observed.png" class="r-stretch quarto-figure-center"></section>
 <section id="average-treatment-effect-ate" class="slide level2">
 <h2>Average Treatment Effect (ATE)</h2>
 <p>Average of all treatment potential outcomes − Average of all control potential outcomes</p>
 <p><span class="math inline">\({ATE} = E[Y_{1} − Y_{0}]\)</span></p>
-<p>In general, <span class="math inline">\(E[Y_{1} − Y_{0}] \ne E[Y|T=1] − E[Y|T=0]\)</span>. This is a difference between setting and conditioning (though the notation appears to be identical!)</p>
-<p><span class="math inline">\(E[Y|T=1]\)</span>: mean of Y among people with T = 1</p>
+<p>In general, <span class="math inline">\(E[Y_{1} − Y_{0}] \ne E[Y|T=1] − E[Y|T=0]\)</span>.</p>
+<p>This is a difference between setting and conditioning (though the notation appears to be identical!)</p>
+<p><span class="math inline">\(E[Y|T=1]\)</span>: mean of Y among units with T = 1</p>
 <p><span class="math inline">\(E[Y_1]\)</span>: mean of Y if the whole population was treated with T = 1</p>
-
-<img data-src="images/paste-4AF0395B.png" class="r-stretch"></section>
-<section id="nothing-is-free" class="slide level2">
-<h2>Nothing is free</h2>
-<p>Outside of a pre-designed randomized experiment, we must make <strong>strong and mostly untestable</strong> assumptions about the treatment assignment mechanism to go from descriptive inference to causal inference.</p>
-<ol type="1">
-<li class="fragment"><p>(Positivity) Every unit is equally likely to be assigned a treatment: <span class="math inline">\(P(T = t | X = x) &gt; 0\)</span></p></li>
-<li class="fragment"><p>(Ignorability) no unmeasured confounders, i.e.&nbsp;<span class="math inline">\(Y_0, Y_1 \perp T | X\)</span>. Among those with the same confounders, we can think of treatment as being randomly assigned.</p></li>
-<li class="fragment"><p>(Consistency) Y is observable, i.e.&nbsp;<span class="math inline">\(Y = Y_t\)</span> if <span class="math inline">\(T = t\)</span> for all <span class="math inline">\(t\)</span></p></li>
-<li class="fragment"><p>Stable Unit Treatment Value Assumption (SUTVA): potential outcomes for unit i are unaffected by the treatment assignment for unit j</p></li>
-</ol>
+<p>Key idea: estimating the counterfactual — a prediction of what would have happened in the absence of the treatment.</p>
 </section>
-<section id="how-the-assumptions-get-us-to-a-treatment-effect" class="slide level2">
-<h2>How the assumptions get us to a treatment effect</h2>
+<section id="the-leap-of-faith" class="slide level2">
+<h2>The ‘Leap of Faith’</h2>
+<ul>
+<li class="fragment"><p>We must make <strong>strong and mostly untestable</strong> assumptions about the treatment assignment mechanism to go from descriptive to causal inference.</p></li>
+<li class="fragment"><p>I’ve already glossed over a few assumptions on my descriptions so far. Let’s walk through the four key assumptions.</p></li>
+</ul>
+</section>
+<section id="positivity-assumption" class="slide level2">
+<h2>Positivity Assumption</h2>
+<ul>
+<li class="fragment"><p>English: Every experimental unit is equally likely to be assigned a treatment conditional on confounders</p></li>
+<li class="fragment"><p>Probabilistic: <span class="math inline">\(P(T = t | X = x) &gt; 0\)</span>.</p></li>
+<li class="fragment"><p>Why: If some segment of the population has no chance of being assigned a treatment, there is no counterfactual to estimate.</p></li>
+</ul>
+<iframe height="360" src="https://giphy.com/embed/zRwA2JgARLVYgWtfgY/video" width="480">
+</iframe>
+</section>
+<section id="ignorability-assumption" class="slide level2">
+<h2>Ignorability Assumption</h2>
+<ul>
+<li class="fragment"><p>English: There are no unmeasured confounders.</p></li>
+<li class="fragment"><p>Probabilistic: <span class="math inline">\(Y_0, Y_1 \perp T | X\)</span>.</p></li>
+<li class="fragment"><p>Why: Among those with the same confounders, we can assume the treatment has been randomly assigned.</p></li>
+</ul>
+<iframe src="https://giphy.com/embed/IdmfEtnMWPzOg" width="480" height="273" frameborder="0" class="giphy-embed" allowfullscreen="">
+</iframe>
+</section>
+<section id="consistency-assumption" class="slide level2">
+<h2>Consistency Assumption</h2>
+<ul>
+<li class="fragment"><p>English: Each outcome is observable.</p></li>
+<li class="fragment"><p>Probabilistic: <span class="math inline">\(Y = Y_t\)</span> if <span class="math inline">\(T = t\)</span> for all <span class="math inline">\(t\)</span>.</p></li>
+<li class="fragment"><p>Why:</p></li>
+</ul>
+<iframe src="https://giphy.com/embed/fvT2tuQGmYxsQbSrQH" width="480" height="295" frameborder="0" class="giphy-embed" allowfullscreen="">
+</iframe>
+</section>
+<section id="stable-unit-treatment-value-assumption-sutva" class="slide level2">
+<h2>Stable Unit Treatment Value Assumption (SUTVA)</h2>
+<ul>
+<li class="fragment">Potential outcomes for unit i are unaffected by the treatment assignment for unit j.</li>
+</ul>
+<iframe width="1000" data-src="https://giphy.com/embed/ailnj2AMt9e9i">
+</iframe>
+</section>
+<section id="how-assumptions-get-us-to-the-ate" class="slide level2">
+<h2>How assumptions get us to the ATE</h2>
 <p><span class="math inline">\(E[Y|T=t, X=x]\)</span> involves only observed data.</p>
 <span class="math display">\[\begin{align}
 E[Y|T=t, X=x] =&amp; E[Y_t|T=t, X=x] \text{ by Consistency}\\
@@ -503,36 +557,13 @@ E[Y|T=t, X=x] =&amp; E[Y_t|T=t, X=x] \text{ by Consistency}\\
 E[Y_1 - Y_0] =&amp; E[Y_1] - E[Y_0] \\
 =&amp; E[E[Y_1|X=x]] - E[E[Y_0|X=x]]
 \end{align}\]</span></p>
-<p>Outcome for treated − Outcome for untreated = [Outcome for treated − Outcome for treated if not treated] + [Outcome for treated if not treated − Outcome for untreated] = Impact of treatment on treated + selection bias.</p>
-<p>Key idea: estimating the counterfactual — a prediction of what would have happened in the absence of the treatment. Neyman-Rubin’s Framework for Causal Inference</p>
-<p>Useful Reference for Causal Inference: <a href="https://www.pnas.org/doi/epdf/10.1073/pnas.1510479113" class="uri">https://www.pnas.org/doi/epdf/10.1073/pnas.1510479113</a></p>
 </section>
-<section id="will-a-new-feature-lead-to-increased-revenue-in-my-app" class="slide level2">
-<h2>Will a new feature lead to increased revenue in my app?</h2>
-<ul>
-<li class="fragment">Treatment: new feature</li>
-<li class="fragment">Control: current feature</li>
-<li class="fragment">Experimental Unit: app user</li>
-<li class="fragment">Measurement/Metric: percent change in revenue per user</li>
-<li class="fragment">Plausible Confounders: age, gender, time of the year</li>
-</ul>
-</section>
-<section id="will-a-regulatory-policy-change-affect-bank-capital" class="slide level2">
-<h2>Will a regulatory policy change affect bank capital?</h2>
-<ul>
-<li class="fragment">Treatment: new policy</li>
-<li class="fragment">Control: former policy</li>
-<li class="fragment">Experimental Unit: bank</li>
-<li class="fragment">Measurement/Metric: percent change in bank capital from policy enactment to set final time</li>
-<li class="fragment">Plausible Confounders: mix of business, mergers/acquisitions/divestitures, economic environment</li>
-</ul>
-</section>
-<section id="from-observational-data-to-pseudo-experiment-via-matching" class="slide level2">
-<h2>From Observational Data to Pseudo-Experiment via Matching</h2>
+<section id="matching" class="slide level2">
+<h2>Matching</h2>
 <p>Suppose we are not in control of the treatment mechanism so there are differences in the assignment, i.e.&nbsp;we are in violation of the Ignorability and possibly the Positivity assumption.</p>
 <p>We want to match on the full set of covariates, X. Propensity scoring: For unit i, <span class="math inline">\(\pi_i = P(T=t|X=x_i)\)</span> If a unit has a propensity score of 0.3, they would have a 30% chance of receiving treatment.</p>
 <p>If we match on propensity score, we can meet our assumption of ignorability (treatment is randomized given X).</p>
-<p>In a randomized experiment, P(T=1|X) = P(T=1) = 0.5. In an observational setting, we don’t know the score, but we can estimate it.</p>
+<p>In a randomized experiment, <span class="math inline">\(P(T=1\|X) = P(T=1) = 0.5\)</span>. In an observational setting, we don’t know the score, but we can estimate it.</p>
 </section>
 <section id="matching-in-practice" class="slide level2">
 <h2>Matching in Practice</h2>
@@ -552,13 +583,12 @@ E[Y_1 - Y_0] =&amp; E[Y_1] - E[Y_0] \\
 <li class="fragment">Treatment: Heating present</li>
 <li class="fragment">Control: Heating absent</li>
 <li class="fragment">Experimental Unit: Listing</li>
-<li class="fragment">Measurement/Metric: percent change in revenue per user</li>
-<li class="fragment">Plausible Confounders: number of bedrooms, number of bathrooms, type of listing (Private Room vs.&nbsp;Entire home). <em>Please note there are many many other confounders possible that I’m not including for simplicity.</em></li>
+<li class="fragment">Measurement/Metric: Nightly cost</li>
+<li class="fragment">Plausible Confounders: # of bedrooms, # of bathrooms, type of listing (Private Room vs.&nbsp;Entire home). <em>Please note there are many many other confounders possible that I’m not including for simplicity.</em></li>
 </ul>
-<p>Additional filters: limiting to listings with 0-5 bedrooms and 1-3 bathrooms to prevent crazy outliers. Also filtering out listings that allow long term stays.</p>
 </section>
-<section id="setting-up-r-libraries-and-reading-in-data" class="slide level2">
-<h2>Setting Up R libraries and reading in data</h2>
+<section id="setting-up-libraries-and-reading-in-data" class="slide level2">
+<h2>Setting up libraries and reading in data</h2>
 <div class="cell" data-hash="causalinf_cache/revealjs/dataclean_2fe88eeacc9f865766d8f310842b4264">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(tidyr)</span>
@@ -576,68 +606,95 @@ E[Y_1 - Y_0] =&amp; E[Y_1] - E[Y_0] \\
 </section>
 <section id="data-cleaning-and-review" class="slide level2">
 <h2>Data Cleaning and Review</h2>
-<div class="cell" data-hash="causalinf_cache/revealjs/dataclean2_af603a64208c90afcd51f976484a125d">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>top40msp <span class="ot">&lt;-</span> <span class="fu">top_amenities</span>(<span class="at">data =</span> msp, <span class="at">number =</span> <span class="dv">40</span>) </span>
-<span id="cb2-2"><a href="#cb2-2"></a></span>
-<span id="cb2-3"><a href="#cb2-3"></a>analysis_set_msp <span class="ot">&lt;-</span> <span class="fu">create_analysis_set</span>(<span class="at">data =</span> msp, </span>
-<span id="cb2-4"><a href="#cb2-4"></a>                    <span class="at">amenities_vector =</span> top40msp, </span>
-<span id="cb2-5"><a href="#cb2-5"></a>                    <span class="at">test_var =</span> <span class="st">'Heating'</span>,</span>
-<span id="cb2-6"><a href="#cb2-6"></a>                    <span class="at">inactive_date =</span> <span class="fu">Sys.Date</span>() <span class="sc">-</span> <span class="dv">365</span>,</span>
-<span id="cb2-7"><a href="#cb2-7"></a>                    <span class="at">room_types =</span> <span class="fu">c</span>(<span class="st">'Entire home/apt'</span>, <span class="st">'Private room'</span>),</span>
-<span id="cb2-8"><a href="#cb2-8"></a>                    <span class="at">standard_baths =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,</span>
-<span id="cb2-9"><a href="#cb2-9"></a>                    <span class="at">standard_beds =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">5</span>,</span>
-<span id="cb2-10"><a href="#cb2-10"></a>                    <span class="at">review_lower_bound =</span> <span class="dv">0</span>,</span>
-<span id="cb2-11"><a href="#cb2-11"></a>                    <span class="at">min_nights_upper_bound =</span> <span class="dv">7</span>)</span>
-<span id="cb2-12"><a href="#cb2-12"></a></span>
-<span id="cb2-13"><a href="#cb2-13"></a>tableone<span class="sc">::</span><span class="fu">CreateTableOne</span>(<span class="at">data =</span> analysis_set_msp, </span>
-<span id="cb2-14"><a href="#cb2-14"></a>                         <span class="at">strata =</span> <span class="st">'Heating'</span>, </span>
-<span id="cb2-15"><a href="#cb2-15"></a>                         <span class="at">smd =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb2-16"><a href="#cb2-16"></a>                         <span class="at">test =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="causalinf_cache/revealjs/dataclean2_e4ae39cb257ae4726bd241bd496d5805">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Custom function to get top n amenities for simplicity</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>top40msp <span class="ot">&lt;-</span> <span class="fu">top_amenities</span>(<span class="at">data =</span> msp, <span class="at">number =</span> <span class="dv">40</span>) </span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co"># Custom function to apply filters and pre-processing</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>analysis_set_msp <span class="ot">&lt;-</span> <span class="fu">create_analysis_set</span>(</span>
+<span id="cb2-6"><a href="#cb2-6"></a>                      <span class="at">data =</span> msp, </span>
+<span id="cb2-7"><a href="#cb2-7"></a>                      <span class="at">amenities_vector =</span> top40msp, </span>
+<span id="cb2-8"><a href="#cb2-8"></a>                      <span class="at">test_var =</span> <span class="st">'Heating'</span>,</span>
+<span id="cb2-9"><a href="#cb2-9"></a>                      <span class="at">inactive_date =</span> <span class="fu">Sys.Date</span>() <span class="sc">-</span> <span class="dv">365</span>,</span>
+<span id="cb2-10"><a href="#cb2-10"></a>                      <span class="at">room_types =</span> <span class="fu">c</span>(<span class="st">'Entire home/apt'</span>, <span class="st">'Private room'</span>),</span>
+<span id="cb2-11"><a href="#cb2-11"></a>                      <span class="at">standard_baths =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,</span>
+<span id="cb2-12"><a href="#cb2-12"></a>                      <span class="at">standard_beds =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">5</span>,</span>
+<span id="cb2-13"><a href="#cb2-13"></a>                      <span class="at">review_lower_bound =</span> <span class="dv">0</span>,</span>
+<span id="cb2-14"><a href="#cb2-14"></a>                      <span class="at">min_nights_upper_bound =</span> <span class="dv">7</span>)</span>
+<span id="cb2-15"><a href="#cb2-15"></a></span>
+<span id="cb2-16"><a href="#cb2-16"></a>unmatched_tbl <span class="ot">&lt;-</span> tableone<span class="sc">::</span><span class="fu">CreateTableOne</span>(</span>
+<span id="cb2-17"><a href="#cb2-17"></a>                         <span class="at">vars =</span> <span class="fu">c</span>(<span class="st">'beds'</span>, <span class="st">'bathroom'</span>, <span class="st">'room_type'</span>),</span>
+<span id="cb2-18"><a href="#cb2-18"></a>                         <span class="at">data =</span> analysis_set_msp, </span>
+<span id="cb2-19"><a href="#cb2-19"></a>                         <span class="at">strata =</span> <span class="st">'Heating'</span>, </span>
+<span id="cb2-20"><a href="#cb2-20"></a>                         <span class="at">smd =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb2-21"><a href="#cb2-21"></a>                         <span class="at">test =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-22"><a href="#cb2-22"></a></span>
+<span id="cb2-23"><a href="#cb2-23"></a><span class="fu">print</span>(unmatched_tbl, <span class="at">smd =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                              Stratified by Heating
-                               FALSE           TRUE           
-  n                               761            1496         
-  price (mean (SD))            159.74 (127.79) 157.07 (139.58)
-  beds (mean (SD))               2.45 (1.30)     2.21 (1.28)  
-  bathroom (mean (SD))           1.31 (0.54)     1.24 (0.50)  
-  Heating = TRUE (%)                0 ( 0.0)     1496 (100.0) 
-  room_type = Private room (%)    176 (23.1)      426 ( 28.5) </code></pre>
+                               FALSE        TRUE         SMD   
+  n                             757         1489               
+  beds (mean (SD))             2.45 (1.30)  2.22 (1.28)   0.178
+  bathroom (mean (SD))         1.31 (0.54)  1.24 (0.50)   0.146
+  room_type = Private room (%)  176 (23.2)   422 (28.3)   0.117</code></pre>
 </div>
 </div>
 </section>
-<section id="fit-a-propensity-score-model-and-matching-based-on-an-algorithm" class="slide level2">
-<h2>Fit a propensity score model and matching based on an algorithm</h2>
-<div class="cell" data-hash="causalinf_cache/revealjs/propscore_448042c719ef6fdf04d672b2eb2df4ca">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>matched_out <span class="ot">&lt;-</span> MatchIt<span class="sc">::</span><span class="fu">matchit</span>(Heating <span class="sc">~</span> beds <span class="sc">+</span> bathroom <span class="sc">+</span> room_type, </span>
-<span id="cb4-2"><a href="#cb4-2"></a>                                <span class="at">data =</span> analysis_set_msp, </span>
-<span id="cb4-3"><a href="#cb4-3"></a>                                <span class="at">method =</span> <span class="st">'optimal'</span>,</span>
-<span id="cb4-4"><a href="#cb4-4"></a>                                <span class="at">caliper =</span> <span class="cn">NULL</span>)</span>
-<span id="cb4-5"><a href="#cb4-5"></a></span>
-<span id="cb4-6"><a href="#cb4-6"></a>analysis_set_msp <span class="ot">&lt;-</span> analysis_set_msp <span class="sc">%&gt;%</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">prop_score =</span> matched_out<span class="sc">$</span>model<span class="sc">$</span>fitted.values,</span>
-<span id="cb4-8"><a href="#cb4-8"></a>                <span class="at">weights =</span> matched_out<span class="sc">$</span>weights)</span>
-<span id="cb4-9"><a href="#cb4-9"></a></span>
-<span id="cb4-10"><a href="#cb4-10"></a>analysis_set_msp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="standardized-mean-differences-smd" class="slide level2">
+<h2>Standardized Mean Differences (SMD)</h2>
+<p>The SMD is a measure of distance between two group means in terms of one or more variables.</p>
+<ul>
+<li class="fragment"><p>Continuous variables: <span class="math inline">\(SMD = \frac{\bar{x}_t - \bar{x}_c}{\sqrt{\frac{s_t^2 + s_c^2}{2}}}\)</span></p></li>
+<li class="fragment"><p>Binary variables: <span class="math inline">\(SMD = \frac{\hat{p}_t - \hat{p}_c}{\sqrt{\frac{p_t(1-p_t) + p_c(1-p_c)}{2}}}\)</span></p></li>
+<li class="fragment"><p>Heuristic: SMD &lt; 0.1 indicates a negligible difference in the mean or prevalence of a covariate between groups.</p></li>
+</ul>
+<div class="fragment">
+<div class="cell" data-hash="causalinf_cache/revealjs/unnamed-chunk-1_2a703adfa8204ab24a10e14193e7e973">
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2,257 × 7
+<pre><code>                              Stratified by Heating
+                               FALSE        TRUE         SMD   
+  n                             757         1489               
+  beds (mean (SD))             2.45 (1.30)  2.22 (1.28)   0.178
+  bathroom (mean (SD))         1.31 (0.54)  1.24 (0.50)   0.146
+  room_type = Private room (%)  176 (23.2)   422 (28.3)   0.117</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="fit-a-propensity-score-model-and-conduct-matching" class="slide level2">
+<h2>Fit a propensity score model and conduct matching</h2>
+<div class="cell" data-hash="causalinf_cache/revealjs/propscore_dcc3854eccbb0e0b0f9b279296edb8a6">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>matched_out <span class="ot">&lt;-</span> MatchIt<span class="sc">::</span><span class="fu">matchit</span>(Heating <span class="sc">~</span> beds <span class="sc">+</span> bathroom <span class="sc">+</span> room_type, </span>
+<span id="cb5-2"><a href="#cb5-2"></a>                                <span class="at">data =</span> analysis_set_msp, </span>
+<span id="cb5-3"><a href="#cb5-3"></a>                                <span class="at">method =</span> <span class="st">'optimal'</span>,</span>
+<span id="cb5-4"><a href="#cb5-4"></a>                                <span class="at">caliper =</span> <span class="cn">NULL</span>)</span>
+<span id="cb5-5"><a href="#cb5-5"></a></span>
+<span id="cb5-6"><a href="#cb5-6"></a>analysis_set_msp <span class="ot">&lt;-</span> analysis_set_msp <span class="sc">%&gt;%</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">prop_score =</span> matched_out<span class="sc">$</span>model<span class="sc">$</span>fitted.values,</span>
+<span id="cb5-8"><a href="#cb5-8"></a>                <span class="at">weights =</span> matched_out<span class="sc">$</span>weights) <span class="sc">%&gt;%</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(<span class="fu">desc</span>(weights), <span class="fu">desc</span>(price))</span>
+<span id="cb5-10"><a href="#cb5-10"></a></span>
+<span id="cb5-11"><a href="#cb5-11"></a>analysis_set_msp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2,246 × 7
    price  beds bathroom Heating room_type       prop_score weights
    &lt;dbl&gt; &lt;int&gt;    &lt;dbl&gt; &lt;lgl&gt;   &lt;chr&gt;                &lt;dbl&gt;   &lt;dbl&gt;
- 1    58     2        1 TRUE    Private room         0.699       0
- 2    64     2        1 TRUE    Private room         0.699       0
- 3    64     2        1 TRUE    Private room         0.699       0
- 4    75     1        1 TRUE    Private room         0.717       0
- 5    49     3        1 TRUE    Private room         0.679       0
- 6    90     1        1 TRUE    Private room         0.717       0
- 7   105     2        1 TRUE    Entire home/apt      0.671       0
- 8    80     1        1 TRUE    Private room         0.717       0
- 9   357     5        2 TRUE    Entire home/apt      0.573       0
-10   172     4        1 TRUE    Entire home/apt      0.630       0
-# … with 2,247 more rows</code></pre>
+ 1  2000     4        2 TRUE    Entire home/apt      0.595       1
+ 2  1890     2        2 TRUE    Entire home/apt      0.636       1
+ 3  1875     5        3 FALSE   Entire home/apt      0.534       1
+ 4  1200     5        3 TRUE    Entire home/apt      0.534       1
+ 5  1000     4        2 TRUE    Entire home/apt      0.595       1
+ 6   944     5        2 FALSE   Entire home/apt      0.573       1
+ 7   900     4        2 FALSE   Entire home/apt      0.595       1
+ 8   900     2        1 TRUE    Entire home/apt      0.672       1
+ 9   853     5        3 FALSE   Entire home/apt      0.534       1
+10   836     5        2 TRUE    Entire home/apt      0.573       1
+# … with 2,236 more rows</code></pre>
 </div>
 </div>
 </section>
-<section id="review-postitivity-assumption" class="slide level2">
-<h2>Review postitivity assumption</h2>
+<section id="check-positivity-assumption" class="slide level2">
+<h2>Check positivity assumption</h2>
 <div class="panel-tabset">
 <ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Graphic</a></li><li><a href="#tabset-1-2">Code</a></li></ul>
 <div class="tab-content">
@@ -647,21 +704,22 @@ E[Y_1 - Y_0] =&amp; E[Y_1] - E[Y_0] \\
 <p><img data-src="causalinf_files/figure-revealjs/propscore31-1.png" width="960"></p>
 </div>
 </div>
+<p>Looks like we are in good shape since we have overlap across the distribution.</p>
 </div>
 <div id="tabset-1-2">
 <div class="cell" data-hash="causalinf_cache/revealjs/propscore32_f4bdd3cc405142b8013568c7b838b9d3">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Positivity assumption checking: </span></span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="co"># Is there overlap between propensity scores in control and treated?</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(analysis_set_msp, <span class="fu">aes</span>(<span class="at">x =</span> prop_score)) <span class="sc">+</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">geom_density</span>(<span class="at">data =</span> analysis_set_msp <span class="sc">%&gt;%</span> </span>
-<span id="cb6-5"><a href="#cb6-5"></a>                 <span class="fu">filter</span>(Heating <span class="sc">==</span> <span class="cn">TRUE</span>), </span>
-<span id="cb6-6"><a href="#cb6-6"></a>               <span class="fu">aes</span>(<span class="at">x =</span> prop_score, <span class="at">y =</span> ..density..), <span class="at">fill=</span> <span class="st">"#69b3a2"</span>) <span class="sc">+</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a>  <span class="fu">geom_density</span>(<span class="at">data =</span> analysis_set_msp <span class="sc">%&gt;%</span> </span>
-<span id="cb6-8"><a href="#cb6-8"></a>                 <span class="fu">filter</span>(Heating <span class="sc">==</span> <span class="cn">FALSE</span>), </span>
-<span id="cb6-9"><a href="#cb6-9"></a>               <span class="fu">aes</span>(<span class="at">x =</span> prop_score, <span class="at">y =</span> <span class="sc">-</span>..density..), <span class="at">fill=</span> <span class="st">"#404080"</span>) <span class="sc">+</span></span>
-<span id="cb6-10"><a href="#cb6-10"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb6-11"><a href="#cb6-11"></a>  <span class="fu">xlab</span>(<span class="st">'Propensity Score'</span>) <span class="sc">+</span></span>
-<span id="cb6-12"><a href="#cb6-12"></a>  <span class="fu">ylab</span>(<span class="st">'Density'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Positivity assumption checking: </span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="co"># Is there overlap between propensity scores in control and treated?</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(analysis_set_msp, <span class="fu">aes</span>(<span class="at">x =</span> prop_score)) <span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a>  <span class="fu">geom_density</span>(<span class="at">data =</span> analysis_set_msp <span class="sc">%&gt;%</span> </span>
+<span id="cb7-5"><a href="#cb7-5"></a>                 <span class="fu">filter</span>(Heating <span class="sc">==</span> <span class="cn">TRUE</span>), </span>
+<span id="cb7-6"><a href="#cb7-6"></a>               <span class="fu">aes</span>(<span class="at">x =</span> prop_score, <span class="at">y =</span> ..density..), <span class="at">fill=</span> <span class="st">"#69b3a2"</span>) <span class="sc">+</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>  <span class="fu">geom_density</span>(<span class="at">data =</span> analysis_set_msp <span class="sc">%&gt;%</span> </span>
+<span id="cb7-8"><a href="#cb7-8"></a>                 <span class="fu">filter</span>(Heating <span class="sc">==</span> <span class="cn">FALSE</span>), </span>
+<span id="cb7-9"><a href="#cb7-9"></a>               <span class="fu">aes</span>(<span class="at">x =</span> prop_score, <span class="at">y =</span> <span class="sc">-</span>..density..), <span class="at">fill=</span> <span class="st">"#404080"</span>) <span class="sc">+</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>  <span class="fu">xlab</span>(<span class="st">'Propensity Score'</span>) <span class="sc">+</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a>  <span class="fu">ylab</span>(<span class="st">'Density'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
@@ -669,17 +727,19 @@ E[Y_1 - Y_0] =&amp; E[Y_1] - E[Y_0] \\
 </section>
 <section id="review-outcome-of-matching" class="slide level2">
 <h2>Review outcome of matching</h2>
-<div class="cell" data-hash="causalinf_cache/revealjs/propscore4_8dcd6f5af7290e2c95ceee2ed044e5d8">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>matched_set_msp <span class="ot">&lt;-</span> analysis_set_msp <span class="sc">%&gt;%</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(weights <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>weights, <span class="sc">-</span>prop_score)</span>
-<span id="cb7-4"><a href="#cb7-4"></a></span>
-<span id="cb7-5"><a href="#cb7-5"></a>match_tbl <span class="ot">&lt;-</span> tableone<span class="sc">::</span><span class="fu">CreateTableOne</span>(<span class="at">vars =</span> <span class="fu">c</span>(<span class="st">'beds'</span>, <span class="st">'bathroom'</span>, <span class="st">'room_type'</span>), </span>
-<span id="cb7-6"><a href="#cb7-6"></a>                                      <span class="at">data =</span> matched_set_msp, </span>
-<span id="cb7-7"><a href="#cb7-7"></a>                                      <span class="at">strata =</span> <span class="st">'Heating'</span>, </span>
-<span id="cb7-8"><a href="#cb7-8"></a>                                      <span class="at">smd =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb7-9"><a href="#cb7-9"></a>                                      <span class="at">test =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb7-10"><a href="#cb7-10"></a><span class="fu">print</span>(match_tbl, <span class="at">smd =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="causalinf_cache/revealjs/propscore4_32f982d820f278210493c5b8aa255149">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>matched_set_msp <span class="ot">&lt;-</span> analysis_set_msp <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(weights <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>weights, <span class="sc">-</span>prop_score)</span>
+<span id="cb8-4"><a href="#cb8-4"></a></span>
+<span id="cb8-5"><a href="#cb8-5"></a>match_tbl <span class="ot">&lt;-</span> tableone<span class="sc">::</span><span class="fu">CreateTableOne</span>(</span>
+<span id="cb8-6"><a href="#cb8-6"></a>                    <span class="at">vars =</span> <span class="fu">c</span>(<span class="st">'beds'</span>, <span class="st">'bathroom'</span>, <span class="st">'room_type'</span>), </span>
+<span id="cb8-7"><a href="#cb8-7"></a>                    <span class="at">data =</span> matched_set_msp,</span>
+<span id="cb8-8"><a href="#cb8-8"></a>                    <span class="at">strata =</span> <span class="st">'Heating'</span>,</span>
+<span id="cb8-9"><a href="#cb8-9"></a>                    <span class="at">smd =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb8-10"><a href="#cb8-10"></a>                    <span class="at">test =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-11"><a href="#cb8-11"></a></span>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="fu">print</span>(match_tbl, <span class="at">smd =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                              Stratified by Heating
                                FALSE        TRUE         SMD   
@@ -689,19 +749,22 @@ E[Y_1 - Y_0] =&amp; E[Y_1] - E[Y_0] \\
   room_type = Private room (%)  176 (23.1)   173 (22.7)   0.009</code></pre>
 </div>
 </div>
+<p>SMDs are all below 0.1 which puts us in good shape to move forward.</p>
 </section>
 <section id="complete-outcome-analysis-on-matched-data" class="slide level2">
 <h2>Complete outcome analysis on matched data</h2>
-<div class="cell" data-hash="causalinf_cache/revealjs/propscore5_2170567b9e8b9957f3aa27f23933939b">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>y_trt <span class="ot">&lt;-</span> matched_set_msp <span class="sc">%&gt;%</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(Heating <span class="sc">==</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(price)</span>
-<span id="cb9-4"><a href="#cb9-4"></a></span>
-<span id="cb9-5"><a href="#cb9-5"></a>y_con <span class="ot">&lt;-</span> matched_set_msp <span class="sc">%&gt;%</span></span>
-<span id="cb9-6"><a href="#cb9-6"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(Heating <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb9-7"><a href="#cb9-7"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(price)</span>
-<span id="cb9-8"><a href="#cb9-8"></a></span>
-<span id="cb9-9"><a href="#cb9-9"></a><span class="fu">t.test</span>(y_trt, y_con, <span class="at">paired =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="causalinf_cache/revealjs/propscore5_9c3e5cbcca730ed78ab934dfcc0450bd">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># Vector of prices for heating (treatment) group</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a>y_trt <span class="ot">&lt;-</span> matched_set_msp <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(Heating <span class="sc">==</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(price)</span>
+<span id="cb10-5"><a href="#cb10-5"></a></span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="co"># Vector of prices for heating (control) group</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a>y_con <span class="ot">&lt;-</span> matched_set_msp <span class="sc">%&gt;%</span></span>
+<span id="cb10-8"><a href="#cb10-8"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(Heating <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-9"><a href="#cb10-9"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(price)</span>
+<span id="cb10-10"><a href="#cb10-10"></a></span>
+<span id="cb10-11"><a href="#cb10-11"></a><span class="fu">t.test</span>(y_trt, y_con, <span class="at">paired =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Paired t-test
@@ -937,12 +1000,15 @@ mean difference
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
       // slide changes (different for each slide format).
       (function () {
-        function fireSlideChanged(previousSlide, currentSlide) {
-
-          // dispatch for htmlwidgets
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
           const event = window.document.createEvent("Event");
           event.initEvent("slideenter", true, true);
           window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
 
           // dispatch for shiny
           if (window.jQuery) {
@@ -953,13 +1019,6 @@ mean difference
               window.jQuery(currentSlide).trigger("shown");
             }
           }
-        }
-
-        // hookup for reveal
-        if (window.Reveal) {
-          window.Reveal.addEventListener("slidechanged", function(event) {
-            fireSlideChanged(event.previousSlide, event.currentSlide);
-          });
         }
 
         // hookup for slidy
@@ -1011,7 +1070,24 @@ mean difference
         button.classList.add('code-copy-button-checked');
         var currentTitle = button.getAttribute("title");
         button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
         setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
           button.setAttribute("title", currentTitle);
           button.classList.remove('code-copy-button-checked');
         }, 1000);
@@ -1049,24 +1125,42 @@ mean difference
           return note.innerHTML;
         });
       }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
       var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
       for (var i=0; i<bibliorefs.length; i++) {
         const ref = bibliorefs[i];
-        const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-        tippyHover(ref, function() {
-          var popup = window.document.createElement('div');
-          cites.forEach(function(cite) {
-            var citeDiv = window.document.createElement('div');
-            citeDiv.classList.add('hanging-indent');
-            citeDiv.classList.add('csl-entry');
-            var biblioDiv = window.document.getElementById('ref-' + cite);
-            if (biblioDiv) {
-              citeDiv.innerHTML = biblioDiv.innerHTML;
-            }
-            popup.appendChild(citeDiv);
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
           });
-          return popup.innerHTML;
-        });
+        }
       }
     });
     </script>
