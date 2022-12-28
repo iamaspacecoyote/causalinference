@@ -3,8 +3,8 @@ reading_data <- function(url){
   first_read <- data.table::fread(url)
   
   processed <- first_read %>%
-    separate_rows(amenities, sep = ',') %>%
-    mutate(amenities = trimws(gsub('[\"]', '', amenities)),
+    tidyr::separate_rows(amenities, sep = ',') %>%
+    dplyr::mutate(amenities = trimws(gsub('[\"]', '', amenities)),
            amenities = gsub('\\]', '', amenities),
            amenities = gsub('\\[', '', amenities)) 
   
@@ -13,10 +13,10 @@ reading_data <- function(url){
 
 top_amenities <- function(data, number){
   data %>%
-    count(amenities) %>%
-    arrange(desc(n)) %>%
-    top_n(number) %>%
-    pull(amenities)
+    dplyr::count(amenities) %>%
+    dplyr::arrange(desc(n)) %>%
+    dplyr::top_n(number) %>%
+    dplyr::pull(amenities)
 }
 
 create_analysis_set <- function(data, 
@@ -30,15 +30,15 @@ create_analysis_set <- function(data,
                                 min_nights_upper_bound = 7){
   
   data %>%
-    filter(amenities %in% amenities_vector) %>%
-    pivot_wider(names_from = amenities, 
+    dplyr::filter(amenities %in% amenities_vector) %>%
+    tidyr::pivot_wider(names_from = amenities, 
                 values_from = amenities,
                 values_fn = ~ !is.na(.x),
                 values_fill = FALSE) %>%
-    mutate(bathroom = as.numeric(stringr::str_extract(bathrooms_text, '[0-9]')),
+    dplyr::mutate(bathroom = as.numeric(stringr::str_extract(bathrooms_text, '[0-9]')),
            price = as.numeric(gsub(",", "", gsub('\\$', '', price)))) %>%
     # Gets rid of hotels and shared rooms
-    filter(room_type %in% room_types &
+    dplyr::filter(room_type %in% room_types &
              # Gets rid of long term rentals (like apartments)
              minimum_nights < min_nights_upper_bound &
              # Gets rid of brand new listings 
@@ -46,6 +46,6 @@ create_analysis_set <- function(data,
              # Gets rid of inactive listings
              last_review >= inactive_date,
            (bathroom %in% standard_baths) & beds %in% standard_beds) %>%
-    select(price, beds, bathroom, all_of(test_var), room_type)
+    dplyr::select(price, beds, bathroom, all_of(test_var), room_type)
 }
   
