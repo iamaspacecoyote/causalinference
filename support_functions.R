@@ -27,6 +27,7 @@ create_analysis_set <- function(data,
                                 standard_baths = 1:3,
                                 standard_beds = 0:5,
                                 review_lower_bound = 0,
+                                price_upper_bound = 5000,
                                 min_nights_upper_bound = 7){
   
   data %>%
@@ -42,10 +43,12 @@ create_analysis_set <- function(data,
              # Gets rid of long term rentals (like apartments)
              minimum_nights < min_nights_upper_bound &
              # Gets rid of brand new listings 
-             number_of_reviews > review_lower_bound &
+             reviews_per_month > review_lower_bound &
              # Gets rid of inactive listings
-             last_review >= inactive_date,
+             last_review >= inactive_date &
+             # Prevent really high prices
+             price <= price_upper_bound & 
            (bathroom %in% standard_baths) & beds %in% standard_beds) %>%
-    dplyr::select(price, beds, bathroom, all_of(test_var), room_type)
+    dplyr::select(reviews_per_month, price, beds, bathroom, all_of(test_var), room_type)
 }
   

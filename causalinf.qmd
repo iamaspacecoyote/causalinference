@@ -6,12 +6,40 @@ format:
   revealjs:
     incremental: true  
     theme: dark
+    code-fold: true
+    scrollable: true
+    progress: true
+    fontsize: 2.2em
+    slide-number: true
 editor: visual
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+## Disclaimer
+
+The views expressed in this presentation are strictly my own. They do not necessarily represent the position of the Federal Reserve Bank of Minneapolis or the Federal Reserve System.
+
+## Who am I?
+
+::: columns
+::: {.column width="75%"}
+-   [Data Science Manager \@ Federal Reserve Bank of Minneapolis](https://www.minneapolisfed.org/news-releases/2021/dietz-recognized-for-excellence-in-bank-supervision)
+    -   I lead a team working on implementation and analysis of models for stress testing the largest banks.
+-   R Enthusiast and STEM diversity advocate
+    -   [Creator of the noRth R user conference](https://rnorthconference.github.io/)
+    -   [Co-organizer of the R Ladies - Twin Cities meetup](https://www.meetup.com/rladies-tc/members/)
+    -   [IF/THEN AAAS STEM Ambassador](https://www.si.edu/womensfutures)
+:::
+
+::: {.column width="25%"}
+<center><img src="images/statue.png" width="500"/></center>
+:::
+:::
+
+# Motivation
 
 ## Coffee
 
@@ -59,15 +87,17 @@ How many of you think it is good for you?
 
 Causal inference is a general set of principles and methods that allow us to make statistical inferences about the causal effects of treatments from randomized and observational data.
 
-::: fragment
-*Did she just say I can make causal statements from observational data?*
+## 
+
+*Did she just say I can make causal statements about observational data?*
 
 <center><img src="https://media.giphy.com/media/5SXsDXvfhx2eI/giphy.gif" width="400"/></center>
-:::
+
+. . .
+
+Yes, I did, but...
 
 ## The 'Leap of Faith'
-
-Well, sort of...
 
 We must make **strong and mostly untestable** assumptions about the treatment assignment mechanism to go from descriptive to causal inference for observational data.
 
@@ -85,6 +115,8 @@ We must make **strong and mostly untestable** assumptions about the treatment as
     -   If one unit is influenced by another, we cannot parse treatment impacts.
 :::
 :::
+
+# Causal Model
 
 ## Neyman--Rubin Causal Model
 
@@ -166,6 +198,7 @@ Key idea: estimating the counterfactual --- a prediction of what would have happ
 
 ## How assumptions get us to the ATE
 
+```{=tex}
 \begin{tabular}{ c | c | c }
 Y & T & X \\
  \hline \\
@@ -174,26 +207,26 @@ Y & T & X \\
 7 & T & X \\
 4 & T & X 
 \end{tabular}
-
+```
 $E[Y|T=t, X=x]$ involves only observed data.
 
-|Unit | Y | T | X |
-|---:|---:|--:|:------|
-|1 | 10 | 1 | 1 | 
-|2 | 7  | 1 | 1 |
-|3 | 8  | 0 | 1 | 
-|4 | 5  | 0 | 1 |
+| Unit |   Y |   T | X   |
+|-----:|----:|----:|:----|
+|    1 |  10 |   1 | 1   |
+|    2 |   7 |   1 | 1   |
+|    3 |   8 |   0 | 1   |
+|    4 |   5 |   0 | 1   |
 
-$E[Y|T=1, X=1] = \frac{10 + 7}{2} = 8.5$
-$E[Y|T=0, X=1] = \frac{8 + 5}{2} = 6.5$
+$E[Y|T=1, X=1] = \frac{10 + 7}{2} = 8.5$ $E[Y|T=0, X=1] = \frac{8 + 5}{2} = 6.5$
 
 ## How assumptions get us to the ATE
 
+```{=tex}
 \begin{align}
 E[Y|T=t, X=x] =& E[Y_t|T=t, X=x] \text{ by Consistency}\\
 =& E[Y_t|X=x] \text{ by Ignorability}\\
 \end{align}
-
+```
 ::: fragment
 $E[Y_t] = E[E[Y_t|X=x]]$ by the Law of Total Expectation
 :::
@@ -205,7 +238,9 @@ E[Y_1 - Y_0] =& E[Y_1] - E[Y_0] \\
 \end{align}
 :::
 
-## Propensity Scores & Matching
+# Propensity Scores & Matching
+
+## Propensity Scores
 
 -   In a randomized experiment, $P(T=1|X) = P(T=1) = 0.5$.
 
@@ -218,12 +253,14 @@ E[Y_1 - Y_0] =& E[Y_1] - E[Y_0] \\
 ## Matching in Practice
 
 1.  Fit a propensity score model for treatment: $P(T=1|X) = f(X)$
-    -   binary outcome =\> logistic regression or machine learning alternatives
-2.  Use the model to predict a propensity score for each observation.
+    -   Choice of model for a binary outcome such as logistic regression or machine learning alternatives
+2.  Apply the model to predict a propensity score for each observation.
 3.  Match observations based on a selected algorithm.
     -   Choice of distance to optimize
-    -   Choice of maximum distance
+    -   Choice of maximum distance (caliper)
 4.  Use matched outcomes in statistical inference
+
+# R Example
 
 ## Airbnb Data Example
 
@@ -233,13 +270,17 @@ Will adding heating in Minneapolis-St. Paul Airbnb listings lead to increased re
 -   Control: Heating absent
 -   Unit: Unique listing
 -   Outcome: Nightly cost
--   Plausible Confounders: \# of bedrooms, \# of bathrooms, type of listing (Private Room vs. Entire home). *Please note there are many many other confounders possible that I'm not including for simplicity.*
+-   Plausible Confounders: reviews per month, \# of bedrooms, \# of bathrooms, type of listing (Private Room vs. Entire home). 
 
-## Setting up libraries and reading in data
+. . .
+
+*Please note there are many many other confounders possible that I'm not including for simplicity.*
+
+## Setting up libraries and reading data
 
 ```{r dataclean}
 #| message: false
-#| cache: true
+#| code-fold: false
 
 library(dplyr)
 library(tidyr)
@@ -256,12 +297,11 @@ source('support_functions.R')
 msp <- reading_data(url = "http://data.insideairbnb.com/united-states/mn/twin-cities-msa/2022-09-16/data/listings.csv.gz")
 
 ```
-
-## Data Cleaning and Review {auto-animate="true"}
+                      
+## Data cleaning and review 
 
 ```{r}
 #| message: false
-#| cache: true
 
 # Custom function to get top n amenities for simplicity
 top40msp <- top_amenities(data = msp, number = 40) 
@@ -277,31 +317,9 @@ analysis_set_msp <- create_analysis_set(
                       standard_beds = 0:5,
                       review_lower_bound = 0,
                       min_nights_upper_bound = 7)
-```
-
-## Data Cleaning and Review {auto-animate="true"}
-
-```{r}
-#| message: false
-#| cache: true
-
-# Custom function to get top n amenities for simplicity
-top40msp <- top_amenities(data = msp, number = 40) 
-
-# Custom function to apply filters and pre-processing
-analysis_set_msp <- create_analysis_set(
-                      data = msp, 
-                      amenities_vector = top40msp, 
-                      test_var = 'Heating',
-                      inactive_date = Sys.Date() - 365,
-                      room_types = c('Entire home/apt', 'Private room'),
-                      standard_baths = 1:3,
-                      standard_beds = 0:5,
-                      review_lower_bound = 0,
-                      min_nights_upper_bound = 7)
 
 unmatched_tbl <- tableone::CreateTableOne(
-                         vars = c('beds', 'bathroom', 'room_type'),
+                         vars = c('reviews_per_month', 'beds', 'bathroom', 'room_type'),
                          data = analysis_set_msp, 
                          strata = 'Heating', 
                          smd = TRUE, 
@@ -311,9 +329,9 @@ print(unmatched_tbl, smd = TRUE)
 
 ```
 
-## Standardized Mean Differences (SMD)
+## Standardized Mean Difference (SMD)
 
-The SMD is a measure of distance between two group means in terms of one or more variables.
+SMD is a measure of distance between two group means.
 
 -   Continuous variables: $SMD = \frac{\bar{x}_t - \bar{x}_c}{\sqrt{\frac{s_t^2 + s_c^2}{2}}}$
 
@@ -324,115 +342,58 @@ The SMD is a measure of distance between two group means in terms of one or more
 ::: fragment
 ```{r}
 #| message: false
-#| cache: true
 #| echo: false
 print(unmatched_tbl, smd = TRUE)
 
 ```
 :::
 
-## Fit a propensity score model and conduct matching {auto-animate="true"}
-
-```{r propscore1}
-#| message: false
-#| cache: true
-
-matched_out <- MatchIt::matchit(Heating ~ beds + bathroom + room_type, 
-                                data = analysis_set_msp, 
-                                method = 'optimal',
-                                caliper = NULL)
-
-analysis_set_msp <- analysis_set_msp %>%
-  dplyr::mutate(prop_score = matched_out$model$fitted.values,
-                weights = matched_out$weights) %>%
-  dplyr::arrange(desc(weights), desc(price))
-```
-
-## Fit a propensity score model and conduct matching {auto-animate="true"}
+## Fit a propensity score model 
 
 ```{r propscore2}
 #| message: false
 #| cache: true
 
-matched_out <- MatchIt::matchit(Heating ~ beds + bathroom + room_type, 
+matched_out <- MatchIt::matchit(Heating ~ reviews_per_month + factor(beds) +
+                                  factor(bathroom) + factor(room_type), 
                                 data = analysis_set_msp, 
+                                distance = 'glm',
+                                link = 'logit',
                                 method = 'optimal',
                                 caliper = NULL)
 
-analysis_set_msp <- analysis_set_msp %>%
-  dplyr::mutate(prop_score = matched_out$model$fitted.values,
-                weights = matched_out$weights) %>%
-  dplyr::arrange(desc(weights), desc(price))
-
-analysis_set_msp
 ```
 
-## Check positivity assumption
+. . .
 
-::: panel-tabset
-### Graphic
+Some variations to consider:
 
-```{r propscore31}
+ - Replace method with one of several others: "nearest" will give nearest neighbor a.k.a greedy matching 
+ 
+ - Use a caliper to reduce possible distances eligible for matching
+
+## Matched outputs 
+
+```{r propscorematch}
 #| message: false
 #| cache: true
-#| echo: false
 
-# Positivity assumption checking
-# Is there overlap between propensity scores in control and treated?
-ggplot2::ggplot(analysis_set_msp, aes(x = prop_score)) +
-  geom_density(data = analysis_set_msp %>% 
-                 filter(Heating == TRUE), 
-               aes(x = prop_score, y = ..density..), fill= "#69b3a2") +
-  geom_density(data = analysis_set_msp %>% 
-                 filter(Heating == FALSE), 
-               aes(x = prop_score, y = -..density..), fill= "#404080") +
-  theme_minimal() +
-  xlab('Propensity Score') +
-  ylab('Density')
+final_match <- MatchIt::match.data(matched_out) %>% 
+  dplyr::arrange(subclass, desc(Heating)) %>%
+  dplyr::rename(prop_score = distance) 
+  
+final_match %>%
+  dplyr::select(subclass, prop_score, price, Heating, beds, bathroom)
 ```
 
-Seems like we are in good shape since we have overlap across the distribution.
-
-### Code
-
-```{r propscore32}
-#| message: false
-#| cache: true
-#| echo: true
-#| eval: false
-
-# Positivity assumption checking: 
-# Is there overlap between propensity scores in control and treated?
-ggplot2::ggplot(data = analysis_set_msp, 
-                mapping = aes(x = prop_score)) +
-  ggplot2::geom_density(
-    data = analysis_set_msp %>% dplyr::filter(Heating == TRUE), 
-    mapping = aes(x = prop_score, y = ..density..), 
-    fill = "#69b3a2") +
-  ggplot2::geom_density(
-    data = analysis_set_msp %>% dplyr::filter(Heating == FALSE), 
-    mapping = aes(x = prop_score, y = -..density..), 
-    fill = "#404080") +
-  ggplot2::theme_minimal() +
-  ggplot2::xlab('Propensity Score') +
-  ggplot2::ylab('Density')
-
-```
-:::
-
-## Review outcome of matching
+## Review balance of matching
 
 ```{r propscore4}
 #| message: false
-#| cache: true
-
-matched_set_msp <- analysis_set_msp %>%
-  dplyr::filter(weights == 1) %>%
-  dplyr::select(-weights, -prop_score)
 
 match_tbl <- tableone::CreateTableOne(
-                    vars = c('beds', 'bathroom', 'room_type'), 
-                    data = matched_set_msp,
+                    vars = c('reviews_per_month', 'beds', 'bathroom', 'room_type'), 
+                    data = final_match,
                     strata = 'Heating',
                     smd = TRUE, 
                     test = FALSE)
@@ -443,25 +404,74 @@ print(match_tbl, smd = TRUE)
 
 SMDs are \< 0.1 which means we can move forward.
 
-## Complete outcome analysis on matched data
+## Check positivity assumption
+
+::: panel-tabset
+### Graphic
+
+```{r propscore31}
+#| message: false
+#| echo: false
+
+# Positivity assumption checking
+# Is there overlap between propensity scores in control and treated?
+ggplot2::ggplot(final_match, aes(x = prop_score)) +
+  geom_density(data = final_match %>% 
+                 filter(Heating == TRUE), 
+               aes(x = prop_score, y = ..density..), fill= "#69b3a2") +
+  geom_density(data = final_match %>% 
+                 filter(Heating == FALSE), 
+               aes(x = prop_score, y = -..density..), fill= "#404080") +
+  theme_minimal() +
+  xlab('Propensity Score') +
+  ylab('Density')
+```
+
+Looks good; we have overlap across the distribution.
+
+### Code
+
+```{r propscore32}
+#| message: false
+#| echo: true
+#| eval: false
+
+# Positivity assumption checking: 
+# Is there overlap between propensity scores in control and treated?
+ggplot2::ggplot(data = final_match, 
+                mapping = aes(x = prop_score)) +
+  ggplot2::geom_density(
+    data = final_match %>% dplyr::filter(Heating == TRUE), 
+    mapping = aes(x = prop_score, y = ..density..), 
+    fill = "#69b3a2") +
+  ggplot2::geom_density(
+    data = final_match %>% dplyr::filter(Heating == FALSE), 
+    mapping = aes(x = prop_score, y = -..density..), 
+    fill = "#404080") +
+  ggplot2::theme_minimal() +
+  ggplot2::xlab('Propensity Score') +
+  ggplot2::ylab('Density')
+
+```
+:::
+
+## Run statistical inference
 
 ```{r propscore5}
 #| message: false
-#| cache: true
 
 # Vector of prices for heating (treatment) group
-y_trt <- matched_set_msp %>%
-  dplyr::filter(Heating == TRUE) %>%
+y_trt <- final_match %>% 
+  dplyr::filter(Heating == TRUE) %>% 
   dplyr::pull(price)
 
 # Vector of prices for heating (control) group
-y_con <- matched_set_msp %>%
-  dplyr::filter(Heating == FALSE) %>%
+y_con <- final_match %>% 
+  dplyr::filter(Heating == FALSE) %>% 
   dplyr::pull(price)
 
-t.test(y_trt, y_con, 
-       paired = TRUE, 
-       alternative = 'greater',
+t.test(y_trt, y_con, paired = TRUE, 
+       alternative = 'two.sided',
        mu = 0, 
        var.equal = FALSE,
        conf.level = 0.95)
