@@ -120,41 +120,90 @@ We must make **strong and mostly untestable** assumptions about the treatment as
 
 ## Neyman--Rubin Causal Model
 
--   Aside from a randomized experiment, causal inference is a missing data problem.
-
--   We don't know the real-world probability of a unit being assigned into a treatment ($T$) given a set of confounders ($X$).
-
-## Potential Outcomes Framework
-
-Each unit has *potential* outcomes $\{Y_0, Y_1\}$ before a treatment decisions is made. A *counterfactual* outcome is what would have been observed if the treatment had been different.
+Each unit $i$ has *potential* outcomes $\{Y_{0i}, Y_{1i}\}$ before a treatment decision is made ($T_i \in \{0,1\}$. We want to understand the treatment effect: $\tau_i = Y_{1i} - Y_{0i}$.
 
 ![](images/outcomes.png){fig-align="center"}
 
 ## Fundamental problem of causal inference
 
-We cannot observe both potential outcomes for a unit.
+However, we cannot observe both potential outcomes for a unit. A *counterfactual* outcome is what would have been observed if the treatment had been different.
 
 ![](images/observed.png){fig-align="center"}
 
-## Average Treatment Effect (ATE)
+## Consistency Assumption
 
-Average of all treatment potential outcomes − Average of all control potential outcomes
+<center><img src="https://media.giphy.com/media/fvT2tuQGmYxsQbSrQH/giphy.gif" width="1000"/></center>
 
-${ATE} = E[Y_{1} − Y_{0}]$
+## Consistency Assumption
 
-In general, $E[Y_{1} − Y_{0}] \ne E[Y|T=1] − E[Y|T=0]$.
+-   English: Each outcome is observable.
 
-This is a difference between setting and conditioning (though the notation appears to be identical!)
+-   Technical: $Y_i = Y_{ti}$ if $T_i = t$ for all $t$. This implies $Y_i = T_iY_{1i} + (1-T_i)Y_{0i}$.
 
-$E[Y|T=1]$: mean of Y among units with T = 1
+## Causal effects of interest
 
-$E[Y_1]$: mean of Y if the whole population was treated with T = 1
+The average treatment effect (ATE) is the average of all treatment potential outcomes less the average of all control potential outcomes.
 
-Key idea: estimating the counterfactual --- a prediction of what would have happened in the absence of the treatment.
+```{=tex}
+\begin{align}
+{ATE} &= E[\tau_i] = E[Y_{1i} − Y_{0i}]
+\end{align}
+```
+The average treatment effect for the treated (ATT) is the ATE for the treated group.
 
+```{=tex}
+\begin{align}
+{ATT} &= E[\tau_i|T_i = 1] = E[(Y_{1i} − Y_{0i})|T_i = 1]   
+\end{align}
+```
+The key idea in either of these is estimating the counterfactual.
+
+## ATE in a Randomized Experiment
+
+Treatment assignment is independent of potential outcomes, i.e. $Y_{i0}, Y_{i1} \perp T_i$. Thus,
+
+```{=tex}
+\begin{align}
+E[Y_{1i} - Y_{0i}] & = E[Y_{1i}] - E[Y_{0i}] \\
+& = E[Y_{1i}|T_i = 1] - E[Y_{0i}|T_i = 0] \textrm{ by independence}\\
+& = E[Y_{i}|T_i = 1] - E[Y_{i}|T_i = 0] \textrm{ by consistency}  
+\end{align}
+```
 ## Positivity Assumption
 
 <center><img src="https://media.giphy.com/media/zRwA2JgARLVYgWtfgY/giphy.gif" width="800"/></center>
+
+## Stable Unit Treatment Value Assumption (SUTVA)
+
+<center><img src="https://media.giphy.com/media/ailnj2AMt9e9i/giphy.gif" width="800"/></center>
+
+## Stable Unit Treatment Value Assumption (SUTVA)
+
+-   English: No interference, i.e. potential outcomes for unit $i$ are unaffected by the treatment assignment for unit $j$.
+
+-   Probabilistic: $Y_{ti}|Y_{sj} = Y_{ti}$
+
+-   Why: This simplifies the missing data problem. Consider if we had to estimate unit $i$ under every possible case of treatment assignment to any other subject.
+
+## Confounders
+
+A confounder (X) is a variable or set of variables that affects both the treatment and the outcome. If we control for confounders, we can still make inferences about the treatment impact on the outcome.
+
+```{r dag}
+#| message: false
+#| echo: false
+library(ggdag)
+library(ggplot2)
+theme_set(theme_dag())
+
+smoking_ca_dag <- dagify(
+  T ~ X,
+  Y ~ T + X
+)
+
+ggdag(smoking_ca_dag, node_size = 20, stylized = TRUE, seed = 1013)
+
+```
 
 ## Positivity Assumption
 
@@ -172,71 +221,9 @@ Key idea: estimating the counterfactual --- a prediction of what would have happ
 
 -   English: There are no unmeasured confounders.
 
--   Probabilistic: $Y_0, Y_1 \perp T | X$.
+-   Probabilistic: $Y_{0}, Y_{1} \perp T | X$.
 
 -   Why: Among those with the same confounders, we can assume the treatment has been randomly assigned.
-
-## Consistency Assumption
-
-<center><img src="https://media.giphy.com/media/fvT2tuQGmYxsQbSrQH/giphy.gif" width="1000"/></center>
-
-## Consistency Assumption
-
--   English: Each outcome is observable.
-
--   Probabilistic: $Y = Y_t$ if $T = t$ for all $t$. This implies, $P(Y|T=t) = P(Y_t|T=t)$.
-
--   Why:
-
-## Stable Unit Treatment Value Assumption (SUTVA)
-
-<center><img src="https://media.giphy.com/media/ailnj2AMt9e9i/giphy.gif" width="800"/></center>
-
-## Stable Unit Treatment Value Assumption (SUTVA)
-
--   Potential outcomes for unit i are unaffected by the treatment assignment for unit j.
-
-## How assumptions get us to the ATE
-
-```{=tex}
-\begin{tabular}{ c | c | c }
-Y & T & X \\
- \hline \\
-10 & T & X \\
-8 & T & X \\
-7 & T & X \\
-4 & T & X 
-\end{tabular}
-```
-$E[Y|T=t, X=x]$ involves only observed data.
-
-| Unit |   Y |   T | X   |
-|-----:|----:|----:|:----|
-|    1 |  10 |   1 | 1   |
-|    2 |   7 |   1 | 1   |
-|    3 |   8 |   0 | 1   |
-|    4 |   5 |   0 | 1   |
-
-$E[Y|T=1, X=1] = \frac{10 + 7}{2} = 8.5$ $E[Y|T=0, X=1] = \frac{8 + 5}{2} = 6.5$
-
-## How assumptions get us to the ATE
-
-```{=tex}
-\begin{align}
-E[Y|T=t, X=x] =& E[Y_t|T=t, X=x] \text{ by Consistency}\\
-=& E[Y_t|X=x] \text{ by Ignorability}\\
-\end{align}
-```
-::: fragment
-$E[Y_t] = E[E[Y_t|X=x]]$ by the Law of Total Expectation
-:::
-
-::: fragment
-Then, \begin{align}
-E[Y_1 - Y_0] =& E[Y_1] - E[Y_0] \\
-=& E[E[Y_1|X=x]] - E[E[Y_0|X=x]]
-\end{align}
-:::
 
 # Propensity Scores & Matching
 
@@ -270,7 +257,7 @@ Will adding heating in Minneapolis-St. Paul Airbnb listings lead to increased re
 -   Control: Heating absent
 -   Unit: Unique listing
 -   Outcome: Nightly cost
--   Plausible Confounders: reviews per month, \# of bedrooms, \# of bathrooms, type of listing (Private Room vs. Entire home). 
+-   Plausible Confounders: reviews per month, \# of bedrooms, \# of bathrooms, type of listing (Private Room vs. Entire home).
 
 . . .
 
@@ -297,8 +284,8 @@ source('support_functions.R')
 msp <- reading_data(url = "http://data.insideairbnb.com/united-states/mn/twin-cities-msa/2022-09-16/data/listings.csv.gz")
 
 ```
-                      
-## Data cleaning and review 
+
+## Data cleaning and review
 
 ```{r}
 #| message: false
@@ -348,7 +335,7 @@ print(unmatched_tbl, smd = TRUE)
 ```
 :::
 
-## Fit a propensity score model 
+## Fit a propensity score model
 
 ```{r propscore2}
 #| message: false
@@ -368,11 +355,11 @@ matched_out <- MatchIt::matchit(Heating ~ reviews_per_month + factor(beds) +
 
 Some variations to consider:
 
- - Replace method with one of several others: "nearest" will give nearest neighbor a.k.a greedy matching 
- 
- - Use a caliper to reduce possible distances eligible for matching
+-   Replace method with one of several others: "nearest" will give nearest neighbor a.k.a greedy matching
 
-## Matched outputs 
+-   Use a caliper to reduce possible distances eligible for matching
+
+## Matched outputs
 
 ```{r propscorematch}
 #| message: false
@@ -406,12 +393,8 @@ SMDs are \< 0.1 which means we can move forward.
 
 ## Check positivity assumption
 
-::: panel-tabset
-### Graphic
-
 ```{r propscore31}
 #| message: false
-#| echo: false
 
 # Positivity assumption checking
 # Is there overlap between propensity scores in control and treated?
@@ -428,32 +411,6 @@ ggplot2::ggplot(final_match, aes(x = prop_score)) +
 ```
 
 Looks good; we have overlap across the distribution.
-
-### Code
-
-```{r propscore32}
-#| message: false
-#| echo: true
-#| eval: false
-
-# Positivity assumption checking: 
-# Is there overlap between propensity scores in control and treated?
-ggplot2::ggplot(data = final_match, 
-                mapping = aes(x = prop_score)) +
-  ggplot2::geom_density(
-    data = final_match %>% dplyr::filter(Heating == TRUE), 
-    mapping = aes(x = prop_score, y = ..density..), 
-    fill = "#69b3a2") +
-  ggplot2::geom_density(
-    data = final_match %>% dplyr::filter(Heating == FALSE), 
-    mapping = aes(x = prop_score, y = -..density..), 
-    fill = "#404080") +
-  ggplot2::theme_minimal() +
-  ggplot2::xlab('Propensity Score') +
-  ggplot2::ylab('Density')
-
-```
-:::
 
 ## Run statistical inference
 

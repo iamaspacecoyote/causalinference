@@ -399,7 +399,7 @@ Lindsey Dietz, PhD
 </div>
 </div>
 
-  <p class="date">2/20/23</p>
+  <p class="date">2/26/23</p>
 </section>
 <section id="disclaimer" class="slide level2">
 <h2>Disclaimer</h2>
@@ -520,30 +520,47 @@ Lindsey Dietz, PhD
 </section>
 <section id="neymanrubin-causal-model" class="slide level2">
 <h2>Neyman–Rubin Causal Model</h2>
-<ul>
-<li class="fragment"><p>Aside from a randomized experiment, causal inference is a missing data problem.</p></li>
-<li class="fragment"><p>We don’t know the real-world probability of a unit being assigned into a treatment (<span class="math inline">\(T\)</span>) given a set of confounders (<span class="math inline">\(X\)</span>).</p></li>
-</ul>
-</section>
-<section id="potential-outcomes-framework" class="slide level2">
-<h2>Potential Outcomes Framework</h2>
-<p>Each unit has <em>potential</em> outcomes <span class="math inline">\(\{Y_0, Y_1\}\)</span> before a treatment decisions is made. A <em>counterfactual</em> outcome is what would have been observed if the treatment had been different.</p>
+<p>Each unit <span class="math inline">\(i\)</span> has <em>potential</em> outcomes <span class="math inline">\(\{Y_{0i}, Y_{1i}\}\)</span> before a treatment decision is made (<span class="math inline">\(T_i \in \{0,1\}\)</span>. We want to understand the treatment effect: <span class="math inline">\(\tau_i = Y_{1i} - Y_{0i}\)</span>.</p>
 
 <img data-src="images/outcomes.png" class="r-stretch quarto-figure-center"></section>
 <section id="fundamental-problem-of-causal-inference" class="slide level2">
 <h2>Fundamental problem of causal inference</h2>
-<p>We cannot observe both potential outcomes for a unit.</p>
+<p>However, we cannot observe both potential outcomes for a unit. A <em>counterfactual</em> outcome is what would have been observed if the treatment had been different.</p>
 
 <img data-src="images/observed.png" class="r-stretch quarto-figure-center"></section>
-<section id="average-treatment-effect-ate" class="slide level2">
-<h2>Average Treatment Effect (ATE)</h2>
-<p>Average of all treatment potential outcomes − Average of all control potential outcomes</p>
-<p><span class="math inline">\({ATE} = E[Y_{1} − Y_{0}]\)</span></p>
-<p>In general, <span class="math inline">\(E[Y_{1} − Y_{0}] \ne E[Y|T=1] − E[Y|T=0]\)</span>.</p>
-<p>This is a difference between setting and conditioning (though the notation appears to be identical!)</p>
-<p><span class="math inline">\(E[Y|T=1]\)</span>: mean of Y among units with T = 1</p>
-<p><span class="math inline">\(E[Y_1]\)</span>: mean of Y if the whole population was treated with T = 1</p>
-<p>Key idea: estimating the counterfactual — a prediction of what would have happened in the absence of the treatment.</p>
+<section id="consistency-assumption" class="slide level2">
+<h2>Consistency Assumption</h2>
+<center>
+<img src="https://media.giphy.com/media/fvT2tuQGmYxsQbSrQH/giphy.gif" width="1000">
+</center>
+</section>
+<section id="consistency-assumption-1" class="slide level2">
+<h2>Consistency Assumption</h2>
+<ul>
+<li class="fragment"><p>English: Each outcome is observable.</p></li>
+<li class="fragment"><p>Technical: <span class="math inline">\(Y_i = Y_{ti}\)</span> if <span class="math inline">\(T_i = t\)</span> for all <span class="math inline">\(t\)</span>. This implies <span class="math inline">\(Y_i = T_iY_{1i} + (1-T_i)Y_{0i}\)</span>.</p></li>
+</ul>
+</section>
+<section id="causal-effects-of-interest" class="slide level2">
+<h2>Causal effects of interest</h2>
+<p>The average treatment effect (ATE) is the average of all treatment potential outcomes less the average of all control potential outcomes.</p>
+<span class="math display">\[\begin{align}
+{ATE} &amp;= E[\tau_i] = E[Y_{1i} − Y_{0i}]
+\end{align}\]</span>
+<p>The average treatment effect for the treated (ATT) is the ATE for the treated group.</p>
+<span class="math display">\[\begin{align}
+{ATT} &amp;= E[\tau_i|T_i = 1] = E[(Y_{1i} − Y_{0i})|T_i = 1]   
+\end{align}\]</span>
+<p>The key idea in either of these is estimating the counterfactual.</p>
+</section>
+<section id="ate-in-a-randomized-experiment" class="slide level2">
+<h2>ATE in a Randomized Experiment</h2>
+<p>Treatment assignment is independent of potential outcomes, i.e.&nbsp;<span class="math inline">\(Y_{i0}, Y_{i1} \perp T_i\)</span>. Thus,</p>
+<span class="math display">\[\begin{align}
+E[Y_{1i} - Y_{0i}] &amp; = E[Y_{1i}] - E[Y_{0i}] \\
+&amp; = E[Y_{1i}|T_i = 1] - E[Y_{0i}|T_i = 0] \textrm{ by independence}\\
+&amp; = E[Y_{i}|T_i = 1] - E[Y_{i}|T_i = 0] \textrm{ by consistency}  
+\end{align}\]</span>
 </section>
 <section id="positivity-assumption" class="slide level2">
 <h2>Positivity Assumption</h2>
@@ -551,6 +568,25 @@ Lindsey Dietz, PhD
 <img src="https://media.giphy.com/media/zRwA2JgARLVYgWtfgY/giphy.gif" width="800">
 </center>
 </section>
+<section id="stable-unit-treatment-value-assumption-sutva" class="slide level2">
+<h2>Stable Unit Treatment Value Assumption (SUTVA)</h2>
+<center>
+<img src="https://media.giphy.com/media/ailnj2AMt9e9i/giphy.gif" width="800">
+</center>
+</section>
+<section id="stable-unit-treatment-value-assumption-sutva-1" class="slide level2">
+<h2>Stable Unit Treatment Value Assumption (SUTVA)</h2>
+<ul>
+<li class="fragment"><p>English: No interference, i.e.&nbsp;potential outcomes for unit <span class="math inline">\(i\)</span> are unaffected by the treatment assignment for unit <span class="math inline">\(j\)</span>.</p></li>
+<li class="fragment"><p>Probabilistic: <span class="math inline">\(Y_{ti}|Y_{sj} = Y_{ti}\)</span></p></li>
+<li class="fragment"><p>Why: This simplifies the missing data problem. Consider if we had to estimate unit <span class="math inline">\(i\)</span> under every possible case of treatment assignment to any other subject.</p></li>
+</ul>
+</section>
+<section id="confounders" class="slide level2">
+<h2>Confounders</h2>
+<p>A confounder (X) is a variable or set of variables that affects both the treatment and the outcome. If we control for confounders, we can still make inferences about the treatment impact on the outcome.</p>
+
+<img data-src="causalinf_files/figure-revealjs/dag-1.png" width="960" class="r-stretch"></section>
 <section id="positivity-assumption-1" class="slide level2">
 <h2>Positivity Assumption</h2>
 <ul>
@@ -569,92 +605,9 @@ Lindsey Dietz, PhD
 <h2>Ignorability Assumption</h2>
 <ul>
 <li class="fragment"><p>English: There are no unmeasured confounders.</p></li>
-<li class="fragment"><p>Probabilistic: <span class="math inline">\(Y_0, Y_1 \perp T | X\)</span>.</p></li>
+<li class="fragment"><p>Probabilistic: <span class="math inline">\(Y_{0}, Y_{1} \perp T | X\)</span>.</p></li>
 <li class="fragment"><p>Why: Among those with the same confounders, we can assume the treatment has been randomly assigned.</p></li>
 </ul>
-</section>
-<section id="consistency-assumption" class="slide level2">
-<h2>Consistency Assumption</h2>
-<center>
-<img src="https://media.giphy.com/media/fvT2tuQGmYxsQbSrQH/giphy.gif" width="1000">
-</center>
-</section>
-<section id="consistency-assumption-1" class="slide level2">
-<h2>Consistency Assumption</h2>
-<ul>
-<li class="fragment"><p>English: Each outcome is observable.</p></li>
-<li class="fragment"><p>Probabilistic: <span class="math inline">\(Y = Y_t\)</span> if <span class="math inline">\(T = t\)</span> for all <span class="math inline">\(t\)</span>. This implies, <span class="math inline">\(P(Y|T=t) = P(Y_t|T=t)\)</span>.</p></li>
-<li class="fragment"><p>Why:</p></li>
-</ul>
-</section>
-<section id="stable-unit-treatment-value-assumption-sutva" class="slide level2">
-<h2>Stable Unit Treatment Value Assumption (SUTVA)</h2>
-<center>
-<img src="https://media.giphy.com/media/ailnj2AMt9e9i/giphy.gif" width="800">
-</center>
-</section>
-<section id="stable-unit-treatment-value-assumption-sutva-1" class="slide level2">
-<h2>Stable Unit Treatment Value Assumption (SUTVA)</h2>
-<ul>
-<li class="fragment">Potential outcomes for unit i are unaffected by the treatment assignment for unit j.</li>
-</ul>
-</section>
-<section id="how-assumptions-get-us-to-the-ate" class="slide level2">
-<h2>How assumptions get us to the ATE</h2>
-<p><span class="math inline">\(E[Y|T=t, X=x]\)</span> involves only observed data.</p>
-<table>
-<thead>
-<tr class="header">
-<th style="text-align: right;">Unit</th>
-<th style="text-align: right;">Y</th>
-<th style="text-align: right;">T</th>
-<th style="text-align: left;">X</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: left;">1</td>
-</tr>
-</tbody>
-</table>
-<p><span class="math inline">\(E[Y|T=1, X=1] = \frac{10 + 7}{2} = 8.5\)</span> <span class="math inline">\(E[Y|T=0, X=1] = \frac{8 + 5}{2} = 6.5\)</span></p>
-</section>
-<section id="how-assumptions-get-us-to-the-ate-1" class="slide level2">
-<h2>How assumptions get us to the ATE</h2>
-<span class="math display">\[\begin{align}
-E[Y|T=t, X=x] =&amp; E[Y_t|T=t, X=x] \text{ by Consistency}\\
-=&amp; E[Y_t|X=x] \text{ by Ignorability}\\
-\end{align}\]</span>
-<div class="fragment">
-<p><span class="math inline">\(E[Y_t] = E[E[Y_t|X=x]]\)</span> by the Law of Total Expectation</p>
-</div>
-<div class="fragment">
-<p>Then, <span class="math display">\[\begin{align}
-E[Y_1 - Y_0] =&amp; E[Y_1] - E[Y_0] \\
-=&amp; E[E[Y_1|X=x]] - E[E[Y_0|X=x]]
-\end{align}\]</span></p>
-</div>
 </section></section>
 <section>
 <section id="propensity-scores-matching" class="title-slide slide level1 center">
@@ -867,41 +820,25 @@ E[Y_1 - Y_0] =&amp; E[Y_1] - E[Y_0] \\
 </section>
 <section id="check-positivity-assumption" class="slide level2">
 <h2>Check positivity assumption</h2>
-<div class="panel-tabset">
-<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Graphic</a></li><li><a href="#tabset-1-2">Code</a></li></ul>
-<div class="tab-content">
-<div id="tabset-1-1">
-<div class="cell">
-<div class="cell-output-display">
-<p><img data-src="causalinf_files/figure-revealjs/propscore31-1.png" width="960"></p>
-</div>
-</div>
-<p>Looks good; we have overlap across the distribution.</p>
-</div>
-<div id="tabset-1-2">
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># Positivity assumption checking: </span></span>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># Positivity assumption checking</span></span>
 <span id="cb10-2"><a href="#cb10-2"></a><span class="co"># Is there overlap between propensity scores in control and treated?</span></span>
-<span id="cb10-3"><a href="#cb10-3"></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(<span class="at">data =</span> final_match, </span>
-<span id="cb10-4"><a href="#cb10-4"></a>                <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> prop_score)) <span class="sc">+</span></span>
-<span id="cb10-5"><a href="#cb10-5"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_density</span>(</span>
-<span id="cb10-6"><a href="#cb10-6"></a>    <span class="at">data =</span> final_match <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(Heating <span class="sc">==</span> <span class="cn">TRUE</span>), </span>
-<span id="cb10-7"><a href="#cb10-7"></a>    <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> prop_score, <span class="at">y =</span> ..density..), </span>
-<span id="cb10-8"><a href="#cb10-8"></a>    <span class="at">fill =</span> <span class="st">"#69b3a2"</span>) <span class="sc">+</span></span>
-<span id="cb10-9"><a href="#cb10-9"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_density</span>(</span>
-<span id="cb10-10"><a href="#cb10-10"></a>    <span class="at">data =</span> final_match <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(Heating <span class="sc">==</span> <span class="cn">FALSE</span>), </span>
-<span id="cb10-11"><a href="#cb10-11"></a>    <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> prop_score, <span class="at">y =</span> <span class="sc">-</span>..density..), </span>
-<span id="cb10-12"><a href="#cb10-12"></a>    <span class="at">fill =</span> <span class="st">"#404080"</span>) <span class="sc">+</span></span>
-<span id="cb10-13"><a href="#cb10-13"></a>  ggplot2<span class="sc">::</span><span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb10-14"><a href="#cb10-14"></a>  ggplot2<span class="sc">::</span><span class="fu">xlab</span>(<span class="st">'Propensity Score'</span>) <span class="sc">+</span></span>
-<span id="cb10-15"><a href="#cb10-15"></a>  ggplot2<span class="sc">::</span><span class="fu">ylab</span>(<span class="st">'Density'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-3"><a href="#cb10-3"></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(final_match, <span class="fu">aes</span>(<span class="at">x =</span> prop_score)) <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a>  <span class="fu">geom_density</span>(<span class="at">data =</span> final_match <span class="sc">%&gt;%</span> </span>
+<span id="cb10-5"><a href="#cb10-5"></a>                 <span class="fu">filter</span>(Heating <span class="sc">==</span> <span class="cn">TRUE</span>), </span>
+<span id="cb10-6"><a href="#cb10-6"></a>               <span class="fu">aes</span>(<span class="at">x =</span> prop_score, <span class="at">y =</span> ..density..), <span class="at">fill=</span> <span class="st">"#69b3a2"</span>) <span class="sc">+</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a>  <span class="fu">geom_density</span>(<span class="at">data =</span> final_match <span class="sc">%&gt;%</span> </span>
+<span id="cb10-8"><a href="#cb10-8"></a>                 <span class="fu">filter</span>(Heating <span class="sc">==</span> <span class="cn">FALSE</span>), </span>
+<span id="cb10-9"><a href="#cb10-9"></a>               <span class="fu">aes</span>(<span class="at">x =</span> prop_score, <span class="at">y =</span> <span class="sc">-</span>..density..), <span class="at">fill=</span> <span class="st">"#404080"</span>) <span class="sc">+</span></span>
+<span id="cb10-10"><a href="#cb10-10"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb10-11"><a href="#cb10-11"></a>  <span class="fu">xlab</span>(<span class="st">'Propensity Score'</span>) <span class="sc">+</span></span>
+<span id="cb10-12"><a href="#cb10-12"></a>  <span class="fu">ylab</span>(<span class="st">'Density'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+
 </div>
-</div>
-</div>
-</div>
+<img data-src="causalinf_files/figure-revealjs/propscore31-1.png" width="960" class="r-stretch"><p>Looks good; we have overlap across the distribution.</p>
 </section>
 <section id="run-statistical-inference" class="slide level2">
 <h2>Run statistical inference</h2>
