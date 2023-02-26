@@ -27,7 +27,7 @@ The views expressed in this presentation are strictly my own. They do not necess
 ::: columns
 ::: {.column width="75%"}
 -   [Data Science Manager \@ Federal Reserve Bank of Minneapolis](https://www.minneapolisfed.org/news-releases/2021/dietz-recognized-for-excellence-in-bank-supervision)
-    -   I lead a team working on implementation and analysis of models for stress testing the largest banks.
+    -   I lead a team working on implementation and analysis of models for stress testing large banks.
 -   R Enthusiast and STEM diversity advocate
     -   [Creator of the noRth R user conference](https://rnorthconference.github.io/)
     -   [Co-organizer of the R Ladies - Twin Cities meetup](https://www.meetup.com/rladies-tc/members/)
@@ -169,9 +169,6 @@ E[Y_{1i} - Y_{0i}] & = E[Y_{1i}] - E[Y_{0i}] \\
 & = E[Y_{i}|T_i = 1] - E[Y_{i}|T_i = 0] \textrm{ by consistency}  
 \end{align}
 ```
-## Positivity Assumption
-
-<center><img src="https://media.giphy.com/media/zRwA2JgARLVYgWtfgY/giphy.gif" width="800"/></center>
 
 ## Stable Unit Treatment Value Assumption (SUTVA)
 
@@ -204,6 +201,10 @@ smoking_ca_dag <- dagify(
 ggdag(smoking_ca_dag, node_size = 20, stylized = TRUE, seed = 1013)
 
 ```
+
+## Positivity Assumption
+
+<center><img src="https://media.giphy.com/media/zRwA2JgARLVYgWtfgY/giphy.gif" width="800"/></center>
 
 ## Positivity Assumption
 
