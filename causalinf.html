@@ -521,17 +521,21 @@ Lindsey Dietz, PhD
 <section id="neymanrubin-causal-model" class="slide level2">
 <h2>Neyman–Rubin Causal Model</h2>
 <p>Each unit <span class="math inline">\(i\)</span> has <em>potential</em> outcomes <span class="math inline">\(\{Y_{0i}, Y_{1i}\}\)</span> before a treatment decision is made (<span class="math inline">\(T_i \in \{0,1\}\)</span>. We want to understand the treatment effect: <span class="math inline">\(\tau_i = Y_{1i} - Y_{0i}\)</span>.</p>
-
-<img data-src="images/outcomes.png" class="r-stretch quarto-figure-center"></section>
+<center>
+<img src="images/outcomes.png" width="605">
+</center>
+</section>
 <section id="fundamental-problem-of-causal-inference" class="slide level2">
 <h2>Fundamental problem of causal inference</h2>
 <p>However, we cannot observe both potential outcomes for a unit. A <em>counterfactual</em> outcome is what would have been observed if the treatment had been different.</p>
-
-<img data-src="images/observed.png" class="r-stretch quarto-figure-center"></section>
+<center>
+<img src="images/observed.png" width="625">
+</center>
+</section>
 <section id="consistency-assumption" class="slide level2">
 <h2>Consistency Assumption</h2>
 <center>
-<img src="https://media.giphy.com/media/fvT2tuQGmYxsQbSrQH/giphy.gif" width="1000">
+<img src="https://media.giphy.com/media/fvT2tuQGmYxsQbSrQH/giphy.gif" width="900">
 </center>
 </section>
 <section id="consistency-assumption-1" class="slide level2">
@@ -566,7 +570,7 @@ E[Y_{1i} - Y_{0i}] &amp; = E[Y_{1i}] - E[Y_{0i}] \\
 <section id="stable-unit-treatment-value-assumption-sutva" class="slide level2">
 <h2>Stable Unit Treatment Value Assumption (SUTVA)</h2>
 <center>
-<img src="https://media.giphy.com/media/ailnj2AMt9e9i/giphy.gif" width="800">
+<img src="https://media.giphy.com/media/ailnj2AMt9e9i/giphy.gif" width="650">
 </center>
 </section>
 <section id="stable-unit-treatment-value-assumption-sutva-1" class="slide level2">
@@ -672,7 +676,7 @@ E[Y_{1i} - Y_{0i}] &amp; = E[Y_{1i}] - E[Y_{0i}] \\
 <li class="fragment">Plausible Confounders: distance from Minneapolis city center, # of bedrooms, # of bathrooms, type of listing (Private Room vs.&nbsp;Entire home).</li>
 </ul>
 <div class="fragment">
-<p><em>Please note there are many many other confounders possible that I’m not including for simplicity.</em></p>
+<p><em>Many other confounders are possible.</em></p>
 </div>
 </section>
 <section id="setting-up-libraries-and-reading-data" class="slide level2">

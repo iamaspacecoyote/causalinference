@@ -122,17 +122,17 @@ We must make **strong and mostly untestable** assumptions about the treatment as
 
 Each unit $i$ has *potential* outcomes $\{Y_{0i}, Y_{1i}\}$ before a treatment decision is made ($T_i \in \{0,1\}$. We want to understand the treatment effect: $\tau_i = Y_{1i} - Y_{0i}$.
 
-![](images/outcomes.png){fig-align="center"}
+<center><img src="images/outcomes.png" width="605"/></center>
 
 ## Fundamental problem of causal inference
 
 However, we cannot observe both potential outcomes for a unit. A *counterfactual* outcome is what would have been observed if the treatment had been different.
 
-![](images/observed.png){fig-align="center"}
+<center><img src="images/observed.png" width="625"/></center>
 
 ## Consistency Assumption
 
-<center><img src="https://media.giphy.com/media/fvT2tuQGmYxsQbSrQH/giphy.gif" width="1000"/></center>
+<center><img src="https://media.giphy.com/media/fvT2tuQGmYxsQbSrQH/giphy.gif" width="900"/></center>
 
 ## Consistency Assumption
 
@@ -173,7 +173,7 @@ E[Y_{1i} - Y_{0i}] & = E[Y_{1i}] - E[Y_{0i}] \\
 ```
 ## Stable Unit Treatment Value Assumption (SUTVA)
 
-<center><img src="https://media.giphy.com/media/ailnj2AMt9e9i/giphy.gif" width="800"/></center>
+<center><img src="https://media.giphy.com/media/ailnj2AMt9e9i/giphy.gif" width="650"/></center>
 
 ## Stable Unit Treatment Value Assumption (SUTVA)
 
@@ -275,7 +275,7 @@ Adding a washer in Minneapolis-St. Paul Airbnb listings will lead to increased r
 
 . . .
 
-*Please note there are many many other confounders possible that I'm not including for simplicity.*
+*Many other confounders are possible.*
 
 ## Setting up libraries and reading data
 
