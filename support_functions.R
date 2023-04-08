@@ -49,6 +49,7 @@ create_analysis_set <- function(data,
              # Prevent really high prices
              price <= price_upper_bound & 
            (bathroom %in% standard_baths) & beds %in% standard_beds) %>%
-    dplyr::select(reviews_per_month, price, beds, bathroom, all_of(test_var), room_type)
+    dplyr::mutate(dist_from_mpls = sqrt((latitude - 44.978375)^2 + (longitude + 93.271713)^2)) %>%
+    dplyr::select(reviews_per_month, price, beds, bathroom, all_of(test_var), room_type, dist_from_mpls)
 }
   

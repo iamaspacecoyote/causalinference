@@ -1,7 +1,7 @@
 ---
 title: "Taking a Leap of Faith: Association to Causation"
 author: "Lindsey Dietz, PhD"
-date: "`r Sys.Date()`"
+date: "2023-04-22"
 format: 
   revealjs:
     incremental: true  
@@ -138,7 +138,9 @@ However, we cannot observe both potential outcomes for a unit. A *counterfactual
 
 -   English: Each outcome is observable.
 
--   Technical: $Y_i = Y_{ti}$ if $T_i = t$ for all $t$. This implies $Y_i = T_iY_{1i} + (1-T_i)Y_{0i}$.
+-   Technical: $Y_i = Y_{ti}$ if $T_i = t$ for $t \in \{0,1\}$. This implies $Y_i = T_iY_{1i} + (1-T_i)Y_{0i}$.
+
+-   Why: The process that gets us to the observed outcome is known. This is used in proofs to go from things we cannot observed to things we can observe.
 
 ## Causal effects of interest
 
@@ -169,7 +171,6 @@ E[Y_{1i} - Y_{0i}] & = E[Y_{1i}] - E[Y_{0i}] \\
 & = E[Y_{i}|T_i = 1] - E[Y_{i}|T_i = 0] \textrm{ by consistency}  
 \end{align}
 ```
-
 ## Stable Unit Treatment Value Assumption (SUTVA)
 
 <center><img src="https://media.giphy.com/media/ailnj2AMt9e9i/giphy.gif" width="800"/></center>
@@ -208,7 +209,7 @@ ggdag(smoking_ca_dag, node_size = 20, stylized = TRUE, seed = 1013)
 
 ## Positivity Assumption
 
--   English: Conditional on confounders, every experimental unit is equally likely to be assigned a treatment.
+-   English: Conditional on confounders, every experimental unit has a non-zero chance to be assigned a treatment.
 
 -   Probabilistic: $P(T = t | X = x) > 0$.
 
@@ -250,15 +251,29 @@ ggdag(smoking_ca_dag, node_size = 20, stylized = TRUE, seed = 1013)
 
 # R Example
 
-## Airbnb Data Example
+## Airbnb Listing
 
-Will adding heating in Minneapolis-St. Paul Airbnb listings lead to increased revenue per stay?
+::: columns
 
--   Treatment: Heating present
--   Control: Heating absent
+::: {.column width="50%"}
+<center><img src="images/listing.png" width="500"/></center>
+::: 
+
+::: {.column width="50%"}
+<center><img src="images/amenities.png" width="500"/></center>
+::: 
+
+:::
+
+## Hypothesis
+
+Adding a washer in Minneapolis-St. Paul Airbnb listings will lead to increased revenue per stay
+
+-   Treatment: Washer present
+-   Control: Washer absent
 -   Unit: Unique listing
 -   Outcome: Nightly cost
--   Plausible Confounders: reviews per month, \# of bedrooms, \# of bathrooms, type of listing (Private Room vs. Entire home).
+-   Plausible Confounders: distance from Minneapolis city center, \# of bedrooms, \# of bathrooms, type of listing (Private Room vs. Entire home).
 
 . . .
 
@@ -298,7 +313,7 @@ top40msp <- top_amenities(data = msp, number = 40)
 analysis_set_msp <- create_analysis_set(
                       data = msp, 
                       amenities_vector = top40msp, 
-                      test_var = 'Heating',
+                      test_var = 'Washer',
                       inactive_date = as.Date('2022-04-30'),
                       room_types = c('Entire home/apt', 'Private room'),
                       standard_baths = 1:3,
@@ -307,9 +322,9 @@ analysis_set_msp <- create_analysis_set(
                       min_nights_upper_bound = 7)
 
 unmatched_tbl <- tableone::CreateTableOne(
-                         vars = c('reviews_per_month', 'beds', 'bathroom', 'room_type'),
+                         vars = c('beds', 'bathroom', 'room_type', 'dist_from_mpls'),
                          data = analysis_set_msp, 
-                         strata = 'Heating', 
+                         strata = 'Washer', 
                          smd = TRUE, 
                          test = FALSE)
 
@@ -342,8 +357,9 @@ print(unmatched_tbl, smd = TRUE)
 #| message: false
 #| cache: true
 
-matched_out <- MatchIt::matchit(Heating ~ reviews_per_month + factor(beds) +
-                                  factor(bathroom) + factor(room_type), 
+matched_out <- MatchIt::matchit(Washer ~  factor(beds) +
+                                  factor(bathroom) + factor(room_type) + 
+                                  dist_from_mpls, 
                                 data = analysis_set_msp, 
                                 distance = 'glm',
                                 link = 'logit',
@@ -367,11 +383,11 @@ Some variations to consider:
 #| cache: true
 
 final_match <- MatchIt::match.data(matched_out) %>% 
-  dplyr::arrange(subclass, desc(Heating)) %>%
+  dplyr::arrange(subclass, desc(Washer)) %>%
   dplyr::rename(prop_score = distance) 
   
 final_match %>%
-  dplyr::select(subclass, prop_score, price, Heating, beds, bathroom)
+  dplyr::select(subclass, prop_score, price, Washer, beds, bathroom, room_type, dist_from_mpls)
 ```
 
 ## Review balance of matching
@@ -380,9 +396,9 @@ final_match %>%
 #| message: false
 
 match_tbl <- tableone::CreateTableOne(
-                    vars = c('reviews_per_month', 'beds', 'bathroom', 'room_type'), 
+                    vars = c('beds', 'bathroom', 'room_type', 'dist_from_mpls'), 
                     data = final_match,
-                    strata = 'Heating',
+                    strata = 'Washer',
                     smd = TRUE, 
                     test = FALSE)
 
@@ -401,10 +417,10 @@ SMDs are \< 0.1 which means we can move forward.
 # Is there overlap between propensity scores in control and treated?
 ggplot2::ggplot(final_match, aes(x = prop_score)) +
   geom_density(data = final_match %>% 
-                 filter(Heating == TRUE), 
+                 filter(Washer == TRUE), 
                aes(x = prop_score, y = ..density..), fill= "#69b3a2") +
   geom_density(data = final_match %>% 
-                 filter(Heating == FALSE), 
+                 filter(Washer == FALSE), 
                aes(x = prop_score, y = -..density..), fill= "#404080") +
   theme_minimal() +
   xlab('Propensity Score') +
@@ -418,14 +434,14 @@ Looks good; we have overlap across the distribution.
 ```{r propscore5}
 #| message: false
 
-# Vector of prices for heating (treatment) group
+# Vector of prices for Washer (treatment) group
 y_trt <- final_match %>% 
-  dplyr::filter(Heating == TRUE) %>% 
+  dplyr::filter(Washer == TRUE) %>% 
   dplyr::pull(price)
 
-# Vector of prices for heating (control) group
+# Vector of prices for Washer (control) group
 y_con <- final_match %>% 
-  dplyr::filter(Heating == FALSE) %>% 
+  dplyr::filter(Washer == FALSE) %>% 
   dplyr::pull(price)
 
 t.test(y_trt, y_con, paired = TRUE, 
@@ -435,3 +451,21 @@ t.test(y_trt, y_con, paired = TRUE,
        conf.level = 0.95)
 
 ```
+
+## The end (of the beginning)
+
+Lots of assumptions mean you need to do a lot of robustness testing
+
+- Pre-processing filtering
+
+- Relevant confounders
+
+- Propensity model types
+
+- Sample sizes
+
+## Thanks for your time!
+
+<center><img src="https://imgs.xkcd.com/comics/health_data.png" width="1000"/></center>
+
+## Some References
