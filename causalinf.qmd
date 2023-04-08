@@ -254,15 +254,13 @@ ggdag(smoking_ca_dag, node_size = 20, stylized = TRUE, seed = 1013)
 ## Airbnb Listing
 
 ::: columns
-
 ::: {.column width="50%"}
 <center><img src="images/listing.png" width="500"/></center>
-::: 
+:::
 
 ::: {.column width="50%"}
 <center><img src="images/amenities.png" width="500"/></center>
-::: 
-
+:::
 :::
 
 ## Hypothesis
@@ -456,13 +454,13 @@ t.test(y_trt, y_con, paired = TRUE,
 
 Lots of assumptions mean you need to do a lot of robustness testing
 
-- Pre-processing filtering
+-   Pre-processing filtering
 
-- Relevant confounders
+-   Relevant confounders
 
-- Propensity model types
+-   Propensity model types
 
-- Sample sizes
+-   Sample sizes
 
 ## Thanks for your time!
 

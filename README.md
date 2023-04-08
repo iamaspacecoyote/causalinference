@@ -11,7 +11,7 @@ To view code and source materials,
 
 1. Clone or download files from this Git repository
 
-2. Open the R project file (Causal Inference.Rproj) in R version 4.2 or higher. 
+2. Open the R project file (Causal Inference.Rproj) using RStudio version 2023.03.0+386 and R version 4.2.3 or higher. 
 
 - The Quarto file (causalinf.qmd) can be used to generate the final HTML presentation. 
 
