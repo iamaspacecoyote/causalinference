@@ -2,6 +2,7 @@
 title: "Taking a Leap of Faith: Association to Causation"
 author: "Lindsey Dietz, PhD"
 date: "2023-04-22"
+institute: "https://github.com/iamaspacecoyote/causalinference"
 format: 
   revealjs:
     incremental: true  
@@ -71,9 +72,13 @@ How many of you think it is good for you?
 
 ## Agenda
 
+::: {.nonincremental}
+
 -   Causal Inference Preliminaries
 -   Matching
 -   Example using R and Airbnb Data
+
+::: 
 
 ## Association To Causation
 
@@ -467,3 +472,15 @@ Lots of assumptions mean you need to do a lot of robustness testing
 <center><img src="https://imgs.xkcd.com/comics/health_data.png" width="1000"/></center>
 
 ## Some References
+
+::: {.nonincremental}
+
+-   Scott Cunnigham (Baylor), [Causal Inference: The Mixtape.](https://mixtape.scunning.com/04-potential_outcomes)
+
+-   Judea Pearl (UCLA), [Causal inference in statistics: An overview](https://projecteuclid.org/journals/statistics-surveys/volume-3/issue-none/Causal-inference-in-statistics-An-overview/10.1214/09-SS057.full)
+
+-   Jason A. Roy (UPenn), [A Crash Course in Causality: Inferring Causal Effects from Observational Data](https://www.coursera.org/learn/crash-course-in-causality)
+
+-   Jasjeet S. Sekhon (UC Berkeley), [The Neyman-Rubin Model of Causal Inference and Estimation via Matching Methods](https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=cc6164063760d265513be4462a65d5a607e20992)
+
+::: 
