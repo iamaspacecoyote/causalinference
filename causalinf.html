@@ -563,15 +563,6 @@ Lindsey Dietz, PhD
 \end{align}\]</span>
 <p>The key idea in either of these is estimating the counterfactual.</p>
 </section>
-<section id="ate-in-a-randomized-experiment" class="slide level2">
-<h2>ATE in a Randomized Experiment</h2>
-<p>Treatment assignment is independent of potential outcomes, i.e.&nbsp;<span class="math inline">\(Y_{i0}, Y_{i1} \perp T_i\)</span>. Thus,</p>
-<span class="math display">\[\begin{align}
-E[Y_{1i} - Y_{0i}] &amp; = E[Y_{1i}] - E[Y_{0i}] \\
-&amp; = E[Y_{1i}|T_i = 1] - E[Y_{0i}|T_i = 0] \textrm{ by independence}\\
-&amp; = E[Y_{i}|T_i = 1] - E[Y_{i}|T_i = 0] \textrm{ by consistency}  
-\end{align}\]</span>
-</section>
 <section id="stable-unit-treatment-value-assumption-sutva" class="slide level2">
 <h2>Stable Unit Treatment Value Assumption (SUTVA)</h2>
 <center>
@@ -594,7 +585,7 @@ E[Y_{1i} - Y_{0i}] &amp; = E[Y_{1i}] - E[Y_{0i}] \\
 <section id="positivity-assumption" class="slide level2">
 <h2>Positivity Assumption</h2>
 <center>
-<img src="https://media.giphy.com/media/zRwA2JgARLVYgWtfgY/giphy.gif" width="800">
+<img src="https://media.giphy.com/media/zRwA2JgARLVYgWtfgY/giphy.gif" width="750">
 </center>
 </section>
 <section id="positivity-assumption-1" class="slide level2">
@@ -624,15 +615,25 @@ E[Y_{1i} - Y_{0i}] &amp; = E[Y_{1i}] - E[Y_{0i}] \\
 <h1>Propensity Scores &amp; Matching</h1>
 
 </section>
+<section id="causal-methods-on-observational-data" class="slide level2">
+<h2>Causal Methods on Observational Data</h2>
+<center>
+<img src="images/uber.png" width="725">
+</center>
+<p>Source: <a href="https://www.uber.com/blog/causal-inference-at-uber/">Uber Blog Post</a></p>
+</section>
 <section id="propensity-scores" class="slide level2">
 <h2>Propensity Scores</h2>
 <ul>
-<li class="fragment"><p>In a randomized experiment, <span class="math inline">\(P(T=1|X) = P(T=1) = 0.5\)</span>.</p></li>
+<li class="fragment"><p>In a randomized experiment with <span class="math inline">\(T \in \{0,1\}\)</span>, <span class="math inline">\(P(T=1|X) = P(T=1) = 0.5\)</span>.</p></li>
 <li class="fragment"><p>In most observational data sets, there was no random assignment of the treatment <span class="math inline">\(P(T=1|X) = f(X)\)</span>. However, we can estimate <span class="math inline">\(f(X)\)</span> with data and assumptions about which <span class="math inline">\(X\)</span> matter.</p>
 <ul>
 <li class="fragment">Ex. a unit with predicted propensity score of 0.3 has a 30% chance of receiving treatment.</li>
 </ul></li>
-<li class="fragment"><p>Once we match on propensity score, we can meet our assumption of <em>Ignorability</em>.</p></li>
+<li class="fragment"><p>Once we match on propensity score, we can meet our assumption of <em>Ignorability</em>.</p>
+<ul>
+<li class="fragment">Thus, we can treat the data like it generated in a randomized experiment.</li>
+</ul></li>
 </ul>
 </section>
 <section id="matching-in-practice" class="slide level2">

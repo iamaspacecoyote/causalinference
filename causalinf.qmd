@@ -72,13 +72,11 @@ How many of you think it is good for you?
 
 ## Agenda
 
-::: {.nonincremental}
-
+::: nonincremental
 -   Causal Inference Preliminaries
 -   Matching
 -   Example using R and Airbnb Data
-
-::: 
+:::
 
 ## Association To Causation
 
@@ -165,17 +163,6 @@ The average treatment effect for the treated (ATT) is the ATE for the treated gr
 ```
 The key idea in either of these is estimating the counterfactual.
 
-## ATE in a Randomized Experiment
-
-Treatment assignment is independent of potential outcomes, i.e. $Y_{i0}, Y_{i1} \perp T_i$. Thus,
-
-```{=tex}
-\begin{align}
-E[Y_{1i} - Y_{0i}] & = E[Y_{1i}] - E[Y_{0i}] \\
-& = E[Y_{1i}|T_i = 1] - E[Y_{0i}|T_i = 0] \textrm{ by independence}\\
-& = E[Y_{i}|T_i = 1] - E[Y_{i}|T_i = 0] \textrm{ by consistency}  
-\end{align}
-```
 ## Stable Unit Treatment Value Assumption (SUTVA)
 
 <center><img src="https://media.giphy.com/media/ailnj2AMt9e9i/giphy.gif" width="650"/></center>
@@ -210,7 +197,7 @@ ggdag(smoking_ca_dag, node_size = 20, stylized = TRUE, seed = 1013)
 
 ## Positivity Assumption
 
-<center><img src="https://media.giphy.com/media/zRwA2JgARLVYgWtfgY/giphy.gif" width="800"/></center>
+<center><img src="https://media.giphy.com/media/zRwA2JgARLVYgWtfgY/giphy.gif" width="750"/></center>
 
 ## Positivity Assumption
 
@@ -234,15 +221,23 @@ ggdag(smoking_ca_dag, node_size = 20, stylized = TRUE, seed = 1013)
 
 # Propensity Scores & Matching
 
+## Causal Methods on Observational Data
+
+<center><img src="images/uber.png" width="725"/></center>
+
+Source: [Uber Blog Post](https://www.uber.com/blog/causal-inference-at-uber/)
+
 ## Propensity Scores
 
--   In a randomized experiment, $P(T=1|X) = P(T=1) = 0.5$.
+-   In a randomized experiment with $T \in \{0,1\}$, $P(T=1|X) = P(T=1) = 0.5$.
 
 -   In most observational data sets, there was no random assignment of the treatment $P(T=1|X) = f(X)$. However, we can estimate $f(X)$ with data and assumptions about which $X$ matter.
 
     -   Ex. a unit with predicted propensity score of 0.3 has a 30% chance of receiving treatment.
 
--   Once we match on propensity score, we can meet our assumption of *Ignorability*.
+- Once we match on propensity score, we can meet our assumption of *Ignorability*.
+
+    -   Thus, we can treat the data like it generated in a randomized experiment.
 
 ## Matching in Practice
 
@@ -473,8 +468,7 @@ Lots of assumptions mean you need to do a lot of robustness testing
 
 ## Some References
 
-::: {.nonincremental}
-
+::: nonincremental
 -   Scott Cunnigham (Baylor), [Causal Inference: The Mixtape.](https://mixtape.scunning.com/04-potential_outcomes)
 
 -   Judea Pearl (UCLA), [Causal inference in statistics: An overview](https://projecteuclid.org/journals/statistics-surveys/volume-3/issue-none/Causal-inference-in-statistics-An-overview/10.1214/09-SS057.full)
@@ -482,5 +476,4 @@ Lots of assumptions mean you need to do a lot of robustness testing
 -   Jason A. Roy (UPenn), [A Crash Course in Causality: Inferring Causal Effects from Observational Data](https://www.coursera.org/learn/crash-course-in-causality)
 
 -   Jasjeet S. Sekhon (UC Berkeley), [The Neyman-Rubin Model of Causal Inference and Estimation via Matching Methods](https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=cc6164063760d265513be4462a65d5a607e20992)
-
-::: 
+:::
